@@ -1,0 +1,278 @@
+package ua.at.tsvetkov.dataprocessor.requests;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
+import ua.at.tsvetkov.dataprocessor.Scheme;
+
+public class GetRequest extends WebRequest {
+
+	private GetRequest() {
+
+	}
+
+	/**
+	 * Return new instance of GetRequest.
+	 * 
+	 * @return
+	 */
+	public static GetRequest newInstance() {
+		return new GetRequest();
+	}
+
+	/**
+	 * Send GET request.
+	 * 
+	 * @param url
+	 * @return InputStream for processing.
+	 * @throws IOException
+	 */
+	public InputStream getInputStream() throws IOException {
+		if (!isBuild())
+			throw new IllegalArgumentException(REQUEST_IS_NOT_BUILDED);
+		startTime = System.currentTimeMillis();
+
+		HttpConnectionParams.setConnectionTimeout(httpParameters, configuration.getTimeout());
+		HttpConnectionParams.setSoTimeout(httpParameters, configuration.getTimeout());
+
+		HttpGet httpPost = new HttpGet(toString());
+		httpPost.setParams(httpParameters);
+
+		printToLogUrl();
+
+		return httpClient.execute(httpPost).getEntity().getContent();
+	}
+
+	// ********************************************************************************
+
+	/**
+	 * Directly assign full URL string. All other URL methods will be ignored
+	 * 
+	 * @param url
+	 */
+	public GetRequest setUrl(String url) {
+		this.url = url;
+		return this;
+	}
+
+	/**
+	 * Set custom HttpParams.
+	 * 
+	 * @return
+	 */
+	public GetRequest setHttpParameters(HttpParams httpParameters) {
+		this.httpParameters = httpParameters;
+		return this;
+	}
+
+	/**
+	 * Set encoding
+	 * 
+	 * @param encoding
+	 */
+	public GetRequest setEncoding(String encoding) {
+		this.encoding = encoding;
+		return this;
+	}
+
+	/**
+	 * Sets the scheme "http://".
+	 * 
+	 * @return
+	 */
+	public GetRequest setSchemeHttp() {
+		this.scheme = Scheme.HTTP.getString();
+		return this;
+	}
+
+	/**
+	 * Sets the scheme "https://".
+	 * 
+	 * @return
+	 */
+	public GetRequest setSchemeHttps() {
+		this.scheme = Scheme.HTTPS.getString();
+		return this;
+	}
+
+	/**
+	 * Sets the scheme "file://".
+	 * 
+	 * @return
+	 */
+	public GetRequest setSchemeFile() {
+		this.scheme = Scheme.HTTPS.getString();
+		return this;
+	}
+
+	/**
+	 * Sets your scheme.
+	 * 
+	 * @param scheme
+	 * @return
+	 */
+	public GetRequest setScheme(String scheme) {
+		this.scheme = scheme;
+		return this;
+	}
+
+	/**
+	 * Set User Info.
+	 * 
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	public GetRequest setUserInfo(String username, String password) {
+		this.username = username;
+		this.password = password;
+		return this;
+	}
+
+	/**
+	 * Set host.
+	 * 
+	 * @param host
+	 * @return
+	 */
+	public GetRequest setHost(String host) {
+		this.host = host;
+		return this;
+	}
+
+	/**
+	 * Set port.
+	 * 
+	 * @param port
+	 * @return
+	 */
+	public GetRequest setPort(String port) {
+		this.port = port;
+		return this;
+	}
+
+	/**
+	 * Set path
+	 * 
+	 * @param path
+	 * @return
+	 */
+	public GetRequest setPath(String path) {
+		this.path = path;
+		return this;
+	}
+
+	public GetRequest setLogTag(String tag) {
+		this.tag = tag;
+		return this;
+	}
+
+	/**
+	 * Add to query GET parameter.
+	 * 
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public GetRequest addGetParam(String key, String value) {
+		if (queries == null)
+			queries = new HashMap<String, String>();
+		queries.put(key, value);
+		return this;
+	}
+
+	/**
+	 * Add to query GET parameter.
+	 * 
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public GetRequest addGetParam(String key, int value) {
+		if (queries == null)
+			queries = new HashMap<String, String>();
+		queries.put(key, String.valueOf(value));
+		return this;
+	}
+
+	/**
+	 * Add to query GET parameter.
+	 * 
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public GetRequest addGetParam(String key, long value) {
+		if (queries == null)
+			queries = new HashMap<String, String>();
+		queries.put(key, String.valueOf(value));
+		return this;
+	}
+
+	/**
+	 * Add to query GET parameter.
+	 * 
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public GetRequest addGetParam(String key, float value) {
+		if (queries == null)
+			queries = new HashMap<String, String>();
+		queries.put(key, String.valueOf(value));
+		return this;
+	}
+
+	/**
+	 * Add to query GET parameter.
+	 * 
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public GetRequest addGetParam(String key, double value) {
+		if (queries == null)
+			queries = new HashMap<String, String>();
+		queries.put(key, String.valueOf(value));
+		return this;
+	}
+
+	/**
+	 * Add fragment.
+	 * 
+	 * @param fragment
+	 * @return
+	 */
+	public GetRequest addFragment(String fragment) {
+		this.fragment = fragment;
+		return this;
+	}
+
+	/**
+	 * Save received data to file. Skip it if exist.
+	 * 
+	 * @param fileName
+	 */
+	public GetRequest saveToFile(String fileName) {
+		this.fileName = fileName;
+		this.isRewriteFile = false;
+		return this;
+	}
+
+	/**
+	 * Save received data to file. Rewrite it if exist.
+	 * 
+	 * @param fileName
+	 */
+	public GetRequest rewriteFile(String fileName) {
+		this.fileName = fileName;
+		this.isRewriteFile = true;
+		return this;
+	}
+
+}
