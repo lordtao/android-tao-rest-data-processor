@@ -53,7 +53,7 @@ Request request = MultipartRequest.newInstance ()
                   . Build ();
 ```
 
-The obtained data request can be processed any of your favorite parser. The processed data is stored in the objects implementing interfaces InputStreamDataInterface, JsonDataInterface, StringDataInterface.
+The obtained data request can be processed by any of your favorite parser. The processed data is stored in the objects implementing interfaces InputStreamDataInterface, JsonDataInterface, StringDataInterface.
 
 ```java
 public class LoginResult extends BaseResult implements JsonDataInterface {
