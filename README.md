@@ -3,6 +3,8 @@
 
 The Data Processor is designed to perform simple RESTservice requests or to files locally. Requests can run synchronously or asynchronously.
 
+#Easy possibility of building requests and processing results.
+
 Initialize the Data Processor
 
 To use the processor needs to initialize it using the configurator. Configurator allows you to set the basic parameters of a request under http://developer.android.com/reference/java/net/URL.html, encoding, timeout, etc. These data are basic and can be modified without problems in the construction of concrete request. You can initialization in the class to inherit from Application:
