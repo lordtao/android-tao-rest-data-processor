@@ -64,10 +64,7 @@ public class GetRequest extends WebRequest {
 
 		printToLogUrl();
 
-		if (httpContext == null)
-			return httpClient.execute(httpPost).getEntity().getContent();
-		else
-			return httpClient.execute(httpPost, httpContext).getEntity().getContent();
+		return getResponce(httpPost);
 	}
 
 	// ********************************************************************************

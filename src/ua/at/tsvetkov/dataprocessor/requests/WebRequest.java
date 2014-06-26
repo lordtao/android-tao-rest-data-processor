@@ -26,6 +26,8 @@ package ua.at.tsvetkov.dataprocessor.requests;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
@@ -44,9 +46,9 @@ public abstract class WebRequest extends Request {
 	protected AndroidHttpClient	httpClient;
 	protected HttpParams				httpParameters;
 	protected HttpContext			httpContext;
-	
+
 	public WebRequest() {
-		httpClient	= AndroidHttpClient.newInstance(configuration.getHttpUserAgent());
+		httpClient = AndroidHttpClient.newInstance(configuration.getHttpUserAgent());
 	}
 
 	@Override
@@ -81,8 +83,18 @@ public abstract class WebRequest extends Request {
 	 * Release resources associated with this request. You must call this, or significant resources (sockets and memory) may be leaked.
 	 */
 	@Override
-	public void close() {
+	public void close() throws Exception {
 		httpClient.close();
+	}
+
+	protected InputStream getResponce(HttpUriRequest httpRequest) throws IOException {
+		HttpResponse responce;
+		if (httpContext == null)
+			responce = httpClient.execute(httpRequest);
+		else
+			responce = httpClient.execute(httpRequest, httpContext);
+		statusCode = responce.getStatusLine().getStatusCode();
+		return responce.getEntity().getContent();
 	}
 
 }

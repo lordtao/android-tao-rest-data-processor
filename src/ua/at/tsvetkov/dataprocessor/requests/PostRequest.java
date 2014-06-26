@@ -73,10 +73,7 @@ public class PostRequest extends WebRequest {
 		printToLogUrl();
 		printToLogPairs();
 
-		if (httpContext == null)
-			return httpClient.execute(httpPost).getEntity().getContent();
-		else
-			return httpClient.execute(httpPost, httpContext).getEntity().getContent();
+		return getResponce(httpPost);
 	}
 
 	/**

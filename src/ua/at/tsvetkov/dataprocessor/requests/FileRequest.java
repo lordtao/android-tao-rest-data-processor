@@ -28,7 +28,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ua.at.tsvetkov.util.Log;
+import ua.at.tsvetkov.dataprocessor.ProcessingCentre;
 
 /**
  * The main class for the file request building. If not specified the request be built with basic configuration parameters specified in
@@ -52,6 +52,7 @@ public abstract class FileRequest extends Request {
 	 */
 	public InputStream getInputStream() throws IOException {
 		inputStream = new FileInputStream(new File(toString()));
+		statusCode = ProcessingCentre.FILE_SUCCESS;
 		return inputStream;
 	}
 
@@ -65,12 +66,8 @@ public abstract class FileRequest extends Request {
 	 * Release resources associated with this request. You must call this, or significant resources (sockets and memory) may be leaked.
 	 */
 	@Override
-	public void close() {
-		try {
-			inputStream.close();
-		} catch (IOException e) {
-			Log.e(e);
-		}
+	public void close() throws Exception {
+		inputStream.close();
 	}
 
 }

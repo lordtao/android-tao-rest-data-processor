@@ -61,6 +61,7 @@ public abstract class Request {
 	protected String								tag;
 	protected boolean								isRewriteFile;
 	protected long									startTime;
+	protected int									statusCode;
 
 	protected Request() {
 		if (configuration == null || configuration.getHttpUserAgent() == null) {
@@ -78,8 +79,10 @@ public abstract class Request {
 
 	/**
 	 * Release resources associated with this request.
+	 * 
+	 * @throws Exception
 	 */
-	public abstract void close();
+	public abstract void close() throws Exception;
 
 	/**
 	 * Build prepared request.
@@ -172,6 +175,15 @@ public abstract class Request {
 	 */
 	public boolean isBuild() {
 		return sb != null;
+	}
+
+	/**
+	 * Return status code. For example HTTP errors 401,403 or
+	 * 
+	 * @return
+	 */
+	public int getStatusCode() {
+		return statusCode;
 	}
 
 	/**

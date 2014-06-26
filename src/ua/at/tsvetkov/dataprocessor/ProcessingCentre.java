@@ -42,9 +42,15 @@ import android.os.Message;
 
 public class ProcessingCentre {
 
-	public static final int		BUFFER	= 8 * Const.KB;
-	public static final int		SUCCESS	= 0;
-	public static final int		ERROR		= 1;
+	public static final int		BUFFER			= 8 * Const.KB;
+	/**
+	 * File was opened success.
+	 */
+	public static final int		FILE_SUCCESS	= 0;
+	/**
+	 * Processing ERROR code.
+	 */
+	public static final int		ERROR				= -1;
 
 	private Request				request;
 	private Handler				handler;
@@ -110,9 +116,9 @@ public class ProcessingCentre {
 			}
 			if (abstractProcessor != null) {
 				abstractProcessor.parse(inputStream);
-				sendMessage(SUCCESS, abstractProcessor.getResult());
+				sendMessage(request.getStatusCode(), abstractProcessor.getResult());
 			} else {
-				sendMessage(SUCCESS, inputStream);
+				sendMessage(request.getStatusCode(), inputStream);
 			}
 		} catch (Exception e) {
 			if (DataProcessor.getInstance().getConfiguration().isLogEnabled()) {
@@ -123,7 +129,7 @@ public class ProcessingCentre {
 			try {
 				inputStream.close();
 				request.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				Log.e(e);
 			}
 		}
@@ -134,11 +140,11 @@ public class ProcessingCentre {
 		return abstractProcessor.getResult();
 	}
 
-	private void sendMessage(int result, Object what) {
+	private void sendMessage(int statusCode, Object obj) {
 		if (handler != null) {
 			Message msg = new Message();
-			msg.what = result;
-			msg.obj = what;
+			msg.what = statusCode;
+			msg.obj = obj;
 			handler.sendMessage(msg);
 		}
 	}

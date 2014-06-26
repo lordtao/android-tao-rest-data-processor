@@ -26,33 +26,33 @@ Currently is possible to build GET, POST, MultipartRequest and processing locale
 
 ```java
 Request request = GetRequest.newInstance ()
-                  . SetLogTag ("FB Login to server")
-                  . AddGetParam ("signature", "DH $ FHJDDBHJV3393n")
-                  . SetPath ("login.php")
-                  . Build ();
+                  .setLogTag ("FB Login to server")
+                  .addGetParam ("signature", "DH $ FHJDDBHJV3393n")
+                  .setPath ("login.php")
+                  .build ();
 ```
 
 ```java
 Request request = PostRequest.newInstance ()
-                  . AddPostParam ("email", "some@gmail.com")
-                  . AddPostParam ("password", "any_password")
-                  . SetLogTag ("Login to server")
-                  . AddGetParam (VAR_SIG, SIGNATURE)
-                  . SetPath ("auth2.php")
-                  . Build ();
+                  .addPostParam ("email", "some@gmail.com")
+                  .addPostParam ("password", "any_password")
+                  .setLogTag ("Login to server")
+                  .addGetParam (VAR_SIG, SIGNATURE)
+                  .setPath ("auth2.php")
+                  .build ();
 ```
 
 ```java
 Request request = MultipartRequest.newInstance ()
-                  . AddTextBody ("userName", "Alex")
-                  . AddTextBody ("email", "some@gmail.com")
-                  . AddTextBody ("password", "any_password")
-                  . AddTextBody ("sex", "male")
-                  . AddJPEG ("imagedata", bitmap, "image.jpg")
-                  . SetLogTag ("Create user")
-                  . AddGetParam (VAR_SIG, SIGNATURE)
-                  . SetPath ("createuser.php")
-                  . Build ();
+                  .addTextBody ("userName", "Alex")
+                  .addTextBody ("email", "some@gmail.com")
+                  .addTextBody ("password", "any_password")
+                  .addTextBody ("sex", "male")
+                  .addJPEG ("imagedata", bitmap, "image.jpg")
+                  .setLogTag ("Create user")
+                  .addGetParam (VAR_SIG, SIGNATURE)
+                  .setPath ("createuser.php")
+                  .build ();
 ```
 
 The obtained data request can be processed by any of your favorite parser. The processed data is stored in the objects implementing interfaces InputStreamDataInterface, JsonDataInterface, StringDataInterface.
@@ -75,7 +75,11 @@ public void fillFromString (String src) throws JSONException {
 }
 ```
 
-Running a request can be synchronous or asynchronous. Synchronous request will returns filled object. Asynchronous request returns the same object through Handler in msg.obj and the result (success or failure) in msg.what which may be equalProcessingCentre.SUCCESS or ProcessingCentre.ERROR
+Running a request can be synchronous or asynchronous. Request will returns filled object through Handler in msg.obj or Exception object. Status code will be return in msg.what.
+
+For HTTP request will return HttpStatus code or ERROR  in msg.what.
+
+For local file request (using FileRequest) process will be return FILE_SUCCESS or ERROR in  in msg.what.
 
 Request execution example:
 
@@ -91,7 +95,7 @@ return new Handler () {
 
       @ Override
       public void handleMessage (Message msg) {
-        if (msg.what == ProcessingCentre.SUCCESS) {
+        if (msg.what == HttpStatus.SC_OK) {
           LoginResult resultObject = (LoginResult) msg.obj;
           ...
           } Else {
