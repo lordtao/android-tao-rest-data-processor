@@ -1,3 +1,26 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Alexandr Tsvetkov.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser General Public License
+ * which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl.html
+ *
+ * Contributors:
+ *     Alexandr Tsvetkov - initial API and implementation
+ *
+ * Project:
+ *     TAO Data Processor
+ *
+ * License agreement:
+ *
+ * 1. This code is published AS IS. Author is not responsible for any damage that can be
+ *    caused by any application that uses this code.
+ * 2. Author does not give a garantee, that this code is error free.
+ * 3. This code can be used in NON-COMMERCIAL applications AS IS without any special
+ *    permission from author.
+ * 4. This code can be modified without any special permission from author IF AND ONLY IF
+ *    this license agreement will remain unchanged.
+ ******************************************************************************/
 package ua.at.tsvetkov.dataprocessor.requests;
 
 import java.io.IOException;
@@ -7,14 +30,16 @@ import java.util.HashMap;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HttpContext;
 
 import ua.at.tsvetkov.dataprocessor.Scheme;
 
+/**
+ * Get Request builder.
+ * 
+ * @author lordtao
+ */
 public class GetRequest extends WebRequest {
-
-	private GetRequest() {
-
-	}
 
 	/**
 	 * Return new instance of GetRequest.
@@ -25,13 +50,7 @@ public class GetRequest extends WebRequest {
 		return new GetRequest();
 	}
 
-	/**
-	 * Send GET request.
-	 * 
-	 * @param url
-	 * @return InputStream for processing.
-	 * @throws IOException
-	 */
+	@Override
 	public InputStream getInputStream() throws IOException {
 		if (!isBuild())
 			throw new IllegalArgumentException(REQUEST_IS_NOT_BUILDED);
@@ -45,7 +64,10 @@ public class GetRequest extends WebRequest {
 
 		printToLogUrl();
 
-		return httpClient.execute(httpPost).getEntity().getContent();
+		if (httpContext == null)
+			return httpClient.execute(httpPost).getEntity().getContent();
+		else
+			return httpClient.execute(httpPost, httpContext).getEntity().getContent();
 	}
 
 	// ********************************************************************************
@@ -67,6 +89,16 @@ public class GetRequest extends WebRequest {
 	 */
 	public GetRequest setHttpParameters(HttpParams httpParameters) {
 		this.httpParameters = httpParameters;
+		return this;
+	}
+
+	/**
+	 * Set custom HttpContext.
+	 * 
+	 * @return
+	 */
+	public GetRequest setHttpContext(HttpContext httpContext) {
+		this.httpContext = httpContext;
 		return this;
 	}
 
