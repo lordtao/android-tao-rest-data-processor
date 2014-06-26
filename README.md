@@ -77,7 +77,7 @@ Running a request can be synchronous or asynchronous. Request will returns fille
 
 For HTTP request will return HttpStatus code or ERROR  in msg.what.
 
-For local file request (using FileRequest) process will be return FILE_SUCCESS or ERROR in  in msg.what.
+For local file request (using FileRequest) process will be return FILE_SUCCESS or ERROR in msg.what.
 
 Request execution example:
 
@@ -105,3 +105,5 @@ return new Handler () {
     };
 }
 ```
+
+Example project you can find at https://github.com/lordtao/android-tao-data-processor-example
