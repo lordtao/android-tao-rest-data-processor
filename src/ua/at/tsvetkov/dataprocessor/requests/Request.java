@@ -42,6 +42,7 @@ import ua.at.tsvetkov.util.Log;
  */
 public abstract class Request {
 
+	protected static final String				CONFIGURATION_ERROR		= "DataProcessor configuration is not initialized.";
 	protected static final String				REQUEST_IS_NOT_BUILDED	= "Request is not builded";
 
 	protected DataProcessorConfiguration	configuration				= DataProcessor.getInstance().getConfiguration();
@@ -62,7 +63,9 @@ public abstract class Request {
 	protected long									startTime;
 
 	protected Request() {
-
+		if (configuration == null || configuration.getHttpUserAgent() == null) {
+			throw new IllegalStateException(CONFIGURATION_ERROR);
+		}
 	}
 
 	/**

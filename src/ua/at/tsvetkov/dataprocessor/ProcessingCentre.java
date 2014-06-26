@@ -30,15 +30,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import ua.at.tsvetkov.dataprocessor.interfaces.InputStreamDataInterface;
-import ua.at.tsvetkov.dataprocessor.interfaces.JsonDataInterface;
 import ua.at.tsvetkov.dataprocessor.interfaces.StringDataInterface;
 import ua.at.tsvetkov.dataprocessor.processors.InputStreamProcessor;
-import ua.at.tsvetkov.dataprocessor.processors.JsonProcessor;
 import ua.at.tsvetkov.dataprocessor.processors.StringProcessor;
 import ua.at.tsvetkov.dataprocessor.processors.abstractclasses.AbstractProcessor;
 import ua.at.tsvetkov.dataprocessor.requests.Request;
-import ua.at.tsvetkov.util.Log;
 import ua.at.tsvetkov.util.Const;
+import ua.at.tsvetkov.util.Log;
 import android.os.Handler;
 import android.os.Message;
 
@@ -76,18 +74,6 @@ public class ProcessingCentre {
 		this.request = request;
 		this.abstractProcessor = null;
 		this.handler = null;
-	}
-
-	public ProcessingCentre(Request request, JsonDataInterface objFillingFromJson) {
-		this.request = request;
-		this.abstractProcessor = new JsonProcessor(objFillingFromJson);
-		this.handler = null;
-	}
-
-	public ProcessingCentre(Request request, JsonDataInterface objFillingFromJson, Handler handler) {
-		this.request = request;
-		this.abstractProcessor = new JsonProcessor(objFillingFromJson);
-		this.handler = handler;
 	}
 
 	public ProcessingCentre(Request request, StringDataInterface objFillingFromString) {

@@ -24,7 +24,6 @@
 package ua.at.tsvetkov.dataprocessor;
 
 import ua.at.tsvetkov.dataprocessor.interfaces.InputStreamDataInterface;
-import ua.at.tsvetkov.dataprocessor.interfaces.JsonDataInterface;
 import ua.at.tsvetkov.dataprocessor.interfaces.StringDataInterface;
 import ua.at.tsvetkov.dataprocessor.processors.abstractclasses.AbstractProcessor;
 import ua.at.tsvetkov.dataprocessor.requests.Request;
@@ -79,7 +78,7 @@ public class DataProcessor {
 	}
 
 	private synchronized void checkConfiguration() {
-		if (configuration == null) {
+		if (configuration == null || configuration.httpUserAgent == null) {
 			throw new IllegalStateException(ERROR_NOT_INIT);
 		}
 	}
@@ -156,28 +155,6 @@ public class DataProcessor {
 	public synchronized void executeAsync(Request request, AbstractProcessor abstractProcessor, Handler handler) {
 		checkConfiguration();
 		new ProcessingCentre(request, abstractProcessor, handler).executeAsync();
-	}
-
-	// ************************ JSON processing methods ************************
-
-	/**
-	 * @param request
-	 * @param objFillingFromJson
-	 * @return
-	 */
-	public synchronized Object execute(Request request, JsonDataInterface objFillingFromJson) {
-		checkConfiguration();
-		return new ProcessingCentre(request, objFillingFromJson).execute();
-	}
-
-	/**
-	 * @param request
-	 * @param objFillingFromJson
-	 * @param handler
-	 */
-	public synchronized void executeAsync(Request request, JsonDataInterface objFillingFromJson, Handler handler) {
-		checkConfiguration();
-		new ProcessingCentre(request, objFillingFromJson, handler).executeAsync();
 	}
 
 	// ************************ String processing methods ************************

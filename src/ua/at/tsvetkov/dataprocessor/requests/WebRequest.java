@@ -41,9 +41,13 @@ import android.net.http.AndroidHttpClient;
  */
 public abstract class WebRequest extends Request {
 
-	protected AndroidHttpClient	httpClient	= AndroidHttpClient.newInstance(configuration.getHttpUserAgent());
+	protected AndroidHttpClient	httpClient;
 	protected HttpParams				httpParameters;
 	protected HttpContext			httpContext;
+	
+	public WebRequest() {
+		httpClient	= AndroidHttpClient.newInstance(configuration.getHttpUserAgent());
+	}
 
 	@Override
 	public abstract InputStream getInputStream() throws IOException;
