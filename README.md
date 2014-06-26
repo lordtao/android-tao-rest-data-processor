@@ -58,20 +58,18 @@ Request request = MultipartRequest.newInstance ()
 The obtained data request can be processed by any of your favorite parser. The processed data is stored in the objects implementing interfaces InputStreamDataInterface, JsonDataInterface, StringDataInterface.
 
 ```java
-public class LoginResult extends BaseResult implements JsonDataInterface {
+public class LoginResult implements StringDataInterface {
 
 public static String token = "";
 public static String email = "";
 public static String password = "";
 
 @ Override
-public void fillFromString (String src) throws JSONException {
+public void fillFromString (String src) throws Exception {
   JSONObject jsonObject = new JSONObject(src);
-  if (isSucess (jsonObject)) {
-    token = jsonObject.getString ("token");
-    email = jsonObject.getString ("email");
-    password = jsonObject.getString ("password");
-  }
+  token = jsonObject.getString ("token");
+  email = jsonObject.getString ("email");
+  password = jsonObject.getString ("password");
 }
 ```
 
