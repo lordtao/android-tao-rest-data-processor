@@ -65,7 +65,8 @@ public static String email = "";
 public static String password = "";
 
 @ Override
-public void fillFromJSONObject (JSONObject jsonObject) throws JSONException {
+public void fillFromString (String src) throws JSONException {
+  JSONObject jsonObject = new JSONObject(src);
   if (isSucess (jsonObject)) {
     token = jsonObject.getString ("token");
     email = jsonObject.getString ("email");
@@ -94,6 +95,8 @@ return new Handler () {
           LoginResult resultObject = (LoginResult) msg.obj;
           ...
           } Else {
+            Exception ex = (Exception) msg.obj;
+            ...
             Log.w ("Can't login");
           }
         }
