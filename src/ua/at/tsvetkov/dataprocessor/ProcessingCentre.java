@@ -52,7 +52,7 @@ public class ProcessingCentre {
 	private Handler				handler;
 	private AbstractProcessor	abstractProcessor;
 	private InputStream			inputStream;
-	private String	fileName;
+	private String					fileName;
 
 	public ProcessingCentre(Request request, AbstractProcessor abstractProcessor, Handler handler) {
 		this.request = request;
@@ -129,8 +129,10 @@ public class ProcessingCentre {
 				sendMessage(SUCCESS, inputStream);
 			}
 		} catch (Exception e) {
-			Log.e(e);
-			sendMessage(ERROR, null);
+			if (DataProcessor.getInstance().getConfiguration().isLogEnabled()) {
+				Log.e(e);
+			}
+			sendMessage(ERROR, e);
 		} finally {
 			try {
 				inputStream.close();
