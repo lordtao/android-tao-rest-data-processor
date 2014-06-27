@@ -57,7 +57,7 @@ public abstract class Request {
 	protected String								path;
 	protected String								fragment;
 	protected String								encoding;
-	protected String								fileName;
+	protected String								cacheFileName;
 	protected String								tag;
 	protected boolean								isRewriteFile;
 	protected long									startTime;
@@ -142,12 +142,12 @@ public abstract class Request {
 	}
 
 	/**
-	 * Returns the name of the file to write request data.
+	 * Returns the name of cache file.
 	 * 
 	 * @return
 	 */
-	public String getNewFileName() {
-		return fileName;
+	public String getCacheFileName() {
+		return cacheFileName;
 	}
 
 	/**

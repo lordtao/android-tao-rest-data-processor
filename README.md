@@ -12,12 +12,12 @@ To use the processor needs to initialize it using the configurator. Configurator
 ```java
 private void initDataProcessor () {
 DataProcessorConfiguration configuration = DataProcessorConfiguration
-                                            . GetBuilder ()
-                                            . SetHost ("google.com")
-                                            . SetLogEnabled (true)
-                                            . SetShowProcessingTime (true)
-                                            . SetTimeout (4000)
-                                            . Build ();
+                                            .getBuilder ()
+                                            .setHost ("google.com")
+                                            .setLogEnabled (true)
+                                            .setShowProcessingTime (true)
+                                            .setTimeout (4000)
+                                            .build ();
 DataProcessor.getInstance (). Init (configuration);
 }
 ```

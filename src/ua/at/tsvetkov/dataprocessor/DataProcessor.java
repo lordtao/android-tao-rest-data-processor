@@ -98,7 +98,7 @@ public class DataProcessor {
 		return Net.isAccessible(activity, configuration.getTestServerUrl(), configuration.getTimeout());
 	}
 
-	// ******************************** Parsing methods ********************************
+	// ******************************** Execution methods ********************************
 
 	/**
 	 * Execute the request without data processing and without waiting an answer

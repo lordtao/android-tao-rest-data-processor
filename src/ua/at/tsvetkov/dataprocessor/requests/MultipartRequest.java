@@ -104,27 +104,27 @@ public class MultipartRequest extends WebRequest {
 	 * @param bitmap
 	 * @param compressFormat
 	 * @param quality
-	 * @param fileName
+	 * @param cacheFileName
 	 * @return
 	 */
-	public MultipartRequest addImage(String name, Bitmap bitmap, CompressFormat compressFormat, int quality, String fileName) {
+	public MultipartRequest addImage(String name, Bitmap bitmap, CompressFormat compressFormat, int quality, String cacheFileName) {
 		if (bitmap != null) {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			bitmap.compress(compressFormat, quality, bos);
 			byte[] imagedata = bos.toByteArray();
-			// ByteArrayBody contentBody = new ByteArrayBody(imagedata, fileName);
+			// ByteArrayBody contentBody = new ByteArrayBody(imagedata, cacheFileName);
 			// builder.addPart(name, contentBody);
-			builder.addBinaryBody(name, imagedata, ContentType.DEFAULT_BINARY, fileName);
+			builder.addBinaryBody(name, imagedata, ContentType.DEFAULT_BINARY, cacheFileName);
 		}
 		return this;
 	}
 
-	public MultipartRequest addPNG(String name, Bitmap bitmap, String fileName) {
-		return addImage(name, bitmap, CompressFormat.PNG, 0, fileName);
+	public MultipartRequest addPNG(String name, Bitmap bitmap, String cacheFileName) {
+		return addImage(name, bitmap, CompressFormat.PNG, 0, cacheFileName);
 	}
 
-	public MultipartRequest addJPEG(String name, Bitmap bitmap, String fileName) {
-		return addImage(name, bitmap, CompressFormat.JPEG, 75, fileName);
+	public MultipartRequest addJPEG(String name, Bitmap bitmap, String cacheFileName) {
+		return addImage(name, bitmap, CompressFormat.JPEG, 75, cacheFileName);
 	}
 
 	public MultipartRequest addBinaryBody(String name, byte[] b) {
@@ -408,23 +408,23 @@ public class MultipartRequest extends WebRequest {
 	}
 
 	/**
-	 * Save received data to file. Skip it if exist.
+	 * Save received data to cache file. Skip it if exist.
 	 * 
-	 * @param fileName
+	 * @param cacheFileName
 	 */
-	public MultipartRequest saveToFile(String fileName) {
-		this.fileName = fileName;
+	public MultipartRequest saveToCacheFile(String cacheFileName) {
+		this.cacheFileName = cacheFileName;
 		this.isRewriteFile = false;
 		return this;
 	}
 
 	/**
-	 * Save received data to file. Rewrite it if exist.
+	 * Save received data to cache file. Rewrite it if exist.
 	 * 
-	 * @param fileName
+	 * @param cacheFileName
 	 */
-	public MultipartRequest rewriteFile(String fileName) {
-		this.fileName = fileName;
+	public MultipartRequest rewriteCacheFile(String cacheFileName) {
+		this.cacheFileName = cacheFileName;
 		this.isRewriteFile = true;
 		return this;
 	}

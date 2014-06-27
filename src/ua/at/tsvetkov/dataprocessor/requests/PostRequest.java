@@ -304,23 +304,23 @@ public class PostRequest extends WebRequest {
 	}
 
 	/**
-	 * Save received data to file. Skip it if exist.
+	 * Save received data to cache file. Skip it if exist.
 	 * 
-	 * @param fileName
+	 * @param cacheFileName
 	 */
-	public PostRequest saveToFile(String fileName) {
-		this.fileName = fileName;
+	public PostRequest saveToCacheFile(String cacheFileName) {
+		this.cacheFileName = cacheFileName;
 		this.isRewriteFile = false;
 		return this;
 	}
 
 	/**
-	 * Save received data to file. Rewrite it if exist.
+	 * Save received data to cache file. Rewrite it if exist.
 	 * 
-	 * @param fileName
+	 * @param cacheFileName
 	 */
-	public PostRequest rewriteFile(String fileName) {
-		this.fileName = fileName;
+	public PostRequest rewriteCacheFile(String cacheFileName) {
+		this.cacheFileName = cacheFileName;
 		this.isRewriteFile = true;
 		return this;
 	}

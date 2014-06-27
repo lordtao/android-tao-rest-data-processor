@@ -107,7 +107,7 @@ public class ProcessingCentre {
 	}
 
 	public Object execute() {
-		fileName = request.getNewFileName();
+		fileName = request.getCacheFileName();
 		try {
 			if (fileName != null && fileName.length() > 0) {
 				saveToFile();
