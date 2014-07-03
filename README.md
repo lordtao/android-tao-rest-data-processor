@@ -22,12 +22,12 @@ DataProcessor.getInstance (). Init (configuration);
 }
 ```
 
-Currently is possible to build GET, POST, MultipartRequest and processing locale files using FileRequest.
+Currently is possible to build GET, POST, PUT, DELETE, MultipartRequest and processing locale files using FileRequest.
 
 ```java
 Request request = GetRequest.newInstance ()
                   .setLogTag ("FB Login to server")
-                  .addGetParam ("signature", "DH $ FHJDDBHJV3393n")
+                  .addGetParam ("signature", "DHFHJDDBHJV3393n")
                   .setPath ("login.php")
                   .build ();
 ```
@@ -55,7 +55,7 @@ Request request = MultipartRequest.newInstance ()
                   .build ();
 ```
 
-The obtained data request can be processed by any of your favorite parser. The processed data is stored in the objects implementing interfaces InputStreamDataInterface, JsonDataInterface, StringDataInterface.
+The obtained data request can be processed by any of your favorite parser. The processed data is stored in the objects implementing interfaces InputStreamDataInterface, StringDataInterface.
 
 ```java
 public class LoginResult implements StringDataInterface {
@@ -73,36 +73,38 @@ public void fillFromString (String src) throws Exception {
 }
 ```
 
-Running a request can be synchronous or asynchronous. Request will returns filled object through Handler in msg.obj or Exception object. Status code will be return in msg.what.
+Running a request can be synchronous or asynchronous. Request will returns filled object through DataProcessor.Callback or Exception object. Status code will be return also. The result Object will be created in the case of a successful call request.
 
-For HTTP request will return HttpStatus code or ERROR  in msg.what.
+For HTTP request will return HttpStatus code or ERROR.
 
-For local file request (using FileRequest) process will be return FILE_SUCCESS or ERROR in msg.what.
+For local file request (using FileRequest) process will be return FILE_SUCCESS or ERROR.
 
 Request execution example:
 
 ```java
-DataProcessor.getInstance (). ExecuteAsync (request, new LoginResult (), handler);
+DataProcessor.getInstance (). ExecuteAsync (request, LoginResult.class, handler);
 ```
 
 Sample processing Handler:
 
 ```java
-private Handler getLoginHandler () {
-return new Handler () {
+private DataProcessor.Callback getLoginCallback () {
+return new DataProcessor.Callback() {
 
-      @ Override
-      public void handleMessage (Message msg) {
-        if (msg.what == HttpStatus.SC_OK) {
-          LoginResult resultObject = (LoginResult) msg.obj;
-          ...
-          } Else {
-            Exception ex = (Exception) msg.obj;
-            ...
-            Log.w ("Can't login");
+      @Override
+      public void onFinish(final Object obj, final int what) {
+          acMainProgressLayout.setVisibility(View.GONE);
+          if (what == HttpStatus.SC_OK) {
+              adapter.init(obj);
+          } else {
+              Exception ex = (Exception) obj;
+              if (ex instanceof IOException) {
+                  Log.e("IO Error", ex);
+              } else {
+                  Log.e("Error", ex);
+              }
           }
-        }
-    };
+     }
 }
 ```
 

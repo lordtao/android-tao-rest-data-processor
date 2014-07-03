@@ -28,20 +28,20 @@ import ua.at.tsvetkov.dataprocessor.processors.abstractclasses.StringAbstractPro
 
 public class StringProcessor extends StringAbstractProcessor {
 
-	private StringDataInterface	object;
+   private StringDataInterface object;
 
-	public StringProcessor(StringDataInterface obj) {
-		object = obj;
-	}
+   public StringProcessor(StringDataInterface obj) {
+      object = obj;
+   }
 
-	@Override
-	public void process(String src) throws Exception {
-		object.fillFromString(src);
-	}
+   @Override
+   public void process(String src) throws Exception {
+      object.fillFromString(src);
+   }
 
-	@Override
-	public Object getResult() {
-		return object;
-	}
+   @Override
+   public Object getResult() {
+      return object;
+   }
 
 }

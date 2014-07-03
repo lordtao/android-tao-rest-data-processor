@@ -38,36 +38,36 @@ import ua.at.tsvetkov.dataprocessor.ProcessingCentre;
  */
 public abstract class FileRequest extends Request {
 
-	private FileInputStream	inputStream;
+   private FileInputStream inputStream;
 
-	protected FileRequest() {
+   protected FileRequest() {
 
-	}
+   }
 
-	/**
-	 * Starts the request and returns a response data as InputStream
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	public InputStream getInputStream() throws IOException {
-		inputStream = new FileInputStream(new File(toString()));
-		statusCode = ProcessingCentre.FILE_SUCCESS;
-		return inputStream;
-	}
+   /**
+    * Starts the request and returns a response data as InputStream
+    * 
+    * @return
+    * @throws IOException
+    */
+   public InputStream getInputStream() throws IOException {
+      inputStream = new FileInputStream(new File(toString()));
+      statusCode = ProcessingCentre.FILE_SUCCESS;
+      return inputStream;
+   }
 
-	@Override
-	public Request build() {
-		scheme = "";
-		return super.build();
-	}
+   @Override
+   public Request build() {
+      scheme = "";
+      return super.build();
+   }
 
-	/**
-	 * Release resources associated with this request. You must call this, or significant resources (sockets and memory) may be leaked.
-	 */
-	@Override
-	public void close() throws Exception {
-		inputStream.close();
-	}
+   /**
+    * Release resources associated with this request. You must call this, or significant resources (sockets and memory) may be leaked.
+    */
+   @Override
+   public void close() throws Exception {
+      inputStream.close();
+   }
 
 }

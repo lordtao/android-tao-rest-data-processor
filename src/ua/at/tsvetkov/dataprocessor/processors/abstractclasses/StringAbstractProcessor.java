@@ -36,29 +36,29 @@ import ua.at.tsvetkov.util.Log;
  */
 public abstract class StringAbstractProcessor extends AbstractProcessor {
 
-	@Override
-	public void parse(InputStream inputStream) throws Exception {
-		if (inputStream == null) {
-			Log.w("InputStream is null. Parsing aborted.");
-			return;
-		}
-		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-		String line;
-		StringBuffer buffer = new StringBuffer();
-		while ((line = reader.readLine()) != null) {
-			buffer.append(line);
-		}
-		process(buffer.toString().trim());
-	}
+   @Override
+   public void parse(InputStream inputStream) throws Exception {
+      if (inputStream == null) {
+         Log.w("InputStream is null. Parsing aborted.");
+         return;
+      }
+      BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+      String line;
+      StringBuffer buffer = new StringBuffer();
+      while ((line = reader.readLine()) != null) {
+         buffer.append(line);
+      }
+      process(buffer.toString().trim());
+   }
 
-	@Override
-	public abstract Object getResult();
+   @Override
+   public abstract Object getResult();
 
-	/**
-	 * Processing the received string.
-	 * 
-	 * @param src
-	 */
-	public abstract void process(String src) throws Exception;
+   /**
+    * Processing the received string.
+    * 
+    * @param src
+    */
+   public abstract void process(String src) throws Exception;
 
 }

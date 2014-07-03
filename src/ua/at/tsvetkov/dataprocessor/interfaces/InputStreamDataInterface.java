@@ -28,6 +28,6 @@ import java.io.InputStream;
 
 public interface InputStreamDataInterface {
 
-	public void fillFromInputStream(InputStream in) throws IOException;
+   public void fillFromInputStream(InputStream in) throws IOException;
 
 }
