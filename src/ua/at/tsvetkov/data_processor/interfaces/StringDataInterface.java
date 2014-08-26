@@ -21,27 +21,10 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.dataprocessor.processors;
+package ua.at.tsvetkov.data_processor.interfaces;
 
-import ua.at.tsvetkov.dataprocessor.interfaces.StringDataInterface;
-import ua.at.tsvetkov.dataprocessor.processors.abstractclasses.StringAbstractProcessor;
+public interface StringDataInterface {
 
-public class StringProcessor extends StringAbstractProcessor {
-
-   private StringDataInterface object;
-
-   public StringProcessor(StringDataInterface obj) {
-      object = obj;
-   }
-
-   @Override
-   public void process(String src) throws Exception {
-      object.fillFromString(src);
-   }
-
-   @Override
-   public Object getResult() {
-      return object;
-   }
+   public void fillFromString(String src) throws Exception;
 
 }

@@ -21,11 +21,11 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.dataprocessor;
+package ua.at.tsvetkov.data_processor;
 
-//import ua.at.tsvetkov.dataprocessor.interfaces.InputStreamDataInterface;
-//import ua.at.tsvetkov.dataprocessor.interfaces.StringDataInterface;
-import ua.at.tsvetkov.dataprocessor.requests.Request;
+//import ua.at.tsvetkov.data_processor.interfaces.InputStreamDataInterface;
+//import ua.at.tsvetkov.data_processor.interfaces.StringDataInterface;
+import ua.at.tsvetkov.data_processor.requests.Request;
 import ua.at.tsvetkov.netchecker.Net;
 import ua.at.tsvetkov.netchecker.NetChecker;
 import ua.at.tsvetkov.netchecker.NetStatus;

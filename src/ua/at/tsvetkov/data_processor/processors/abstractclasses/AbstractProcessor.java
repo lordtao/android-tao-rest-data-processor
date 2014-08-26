@@ -21,29 +21,25 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.dataprocessor;
+package ua.at.tsvetkov.data_processor.processors.abstractclasses;
 
-/**
- * Protocol for URL like "http" or "file". This is also known as the scheme. The returned string is lower case.
- * 
- * @author lordtao
- */
-public enum Scheme {
-   HTTP("http://"), HTTPS("https://"), FILE("file://");
+import java.io.InputStream;
 
-   private String mType;
-
-   private Scheme(String type) {
-      this.mType = type;
-   }
+public abstract class AbstractProcessor {
 
    /**
-    * Returns the protocol for URL like "http://" or "file://". This is also known as the scheme. The returned string is lower case.
+    * Parse the input stream with implemented parser.
     * 
-    * @return
+    * @param inputStream
+    * @throws Exception
     */
-   @Override
-   public String toString() {
-      return mType;
-   }
+   public abstract void parse(InputStream inputStream) throws Exception;
+
+   /**
+    * Returns the result of processing query.
+    * 
+    * @return resulting object
+    */
+   public abstract Object getResult();
+
 }

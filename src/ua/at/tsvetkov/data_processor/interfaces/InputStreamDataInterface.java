@@ -21,29 +21,13 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.dataprocessor.processors;
+package ua.at.tsvetkov.data_processor.interfaces;
 
+import java.io.IOException;
 import java.io.InputStream;
 
-import ua.at.tsvetkov.dataprocessor.interfaces.InputStreamDataInterface;
-import ua.at.tsvetkov.dataprocessor.processors.abstractclasses.AbstractProcessor;
+public interface InputStreamDataInterface {
 
-public class InputStreamProcessor extends AbstractProcessor {
-
-   private InputStreamDataInterface object;
-
-   public InputStreamProcessor(InputStreamDataInterface obj) {
-      object = obj;
-   }
-
-   @Override
-   public void parse(InputStream inputStream) throws Exception {
-      object.fillFromInputStream(inputStream);
-   }
-
-   @Override
-   public Object getResult() {
-      return object;
-   }
+   public void fillFromInputStream(InputStream in) throws IOException;
 
 }

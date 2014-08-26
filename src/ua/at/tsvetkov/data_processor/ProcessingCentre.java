@@ -21,7 +21,7 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.dataprocessor;
+package ua.at.tsvetkov.data_processor;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,16 +33,17 @@ import java.security.InvalidParameterException;
 
 import org.apache.http.HttpStatus;
 
-import ua.at.tsvetkov.dataprocessor.DataProcessor.Callback;
-import ua.at.tsvetkov.dataprocessor.interfaces.InputStreamDataInterface;
-import ua.at.tsvetkov.dataprocessor.interfaces.StringDataInterface;
-import ua.at.tsvetkov.dataprocessor.processors.InputStreamProcessor;
-import ua.at.tsvetkov.dataprocessor.processors.StringProcessor;
-import ua.at.tsvetkov.dataprocessor.processors.abstractclasses.AbstractProcessor;
-import ua.at.tsvetkov.dataprocessor.requests.Request;
+import ua.at.tsvetkov.data_processor.DataProcessor.Callback;
+import ua.at.tsvetkov.data_processor.interfaces.InputStreamDataInterface;
+import ua.at.tsvetkov.data_processor.interfaces.StringDataInterface;
+import ua.at.tsvetkov.data_processor.processors.InputStreamProcessor;
+import ua.at.tsvetkov.data_processor.processors.StringProcessor;
+import ua.at.tsvetkov.data_processor.processors.abstractclasses.AbstractProcessor;
+import ua.at.tsvetkov.data_processor.requests.Request;
 import ua.at.tsvetkov.util.Const;
 import ua.at.tsvetkov.util.Log;
 import android.os.Handler;
+import android.os.Looper;
 
 public class ProcessingCentre {
 
@@ -65,7 +66,7 @@ public class ProcessingCentre {
    private Class<?>            clazz;
    private Callback            callback;
    private Thread              thread;
-   private final Handler       handler                 = new Handler();
+   private final Handler       handler;
 
    /**
     * @param request
@@ -78,6 +79,11 @@ public class ProcessingCentre {
       this.request = request;
       this.clazz = clazz;
       this.callback = null;
+
+      if (Looper.myLooper() != null)
+         handler = new Handler();
+      else
+         handler = null;
       thread = Thread.currentThread();
    }
 
@@ -93,6 +99,11 @@ public class ProcessingCentre {
       this.request = request;
       this.clazz = clazz;
       this.callback = callback;
+
+      if (Looper.myLooper() != null)
+         handler = new Handler();
+      else
+         handler = null;
       thread = Thread.currentThread();
    }
 
@@ -123,7 +134,8 @@ public class ProcessingCentre {
          sendMessage(ERROR, e);
       } finally {
          try {
-            inputStream.close();
+            if (inputStream != null)
+               inputStream.close();
             request.close();
          } catch (Exception e) {
             Log.e(e);
@@ -133,7 +145,10 @@ public class ProcessingCentre {
          long time = System.currentTimeMillis() - request.getStartTime();
          Log.v("Processing time = " + time + " ms. [ " + request + " ]");
       }
-      return processor.getResult();
+      if (processor != null)
+         return processor.getResult();
+      else
+         return null;
    }
 
    /**

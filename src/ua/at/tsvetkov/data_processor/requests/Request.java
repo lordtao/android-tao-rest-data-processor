@@ -21,8 +21,9 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.dataprocessor.requests;
+package ua.at.tsvetkov.data_processor.requests;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -30,13 +31,14 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import ua.at.tsvetkov.dataprocessor.DataProcessor;
-import ua.at.tsvetkov.dataprocessor.DataProcessorConfiguration;
+import ua.at.tsvetkov.data_processor.DataProcessor;
+import ua.at.tsvetkov.data_processor.DataProcessorConfiguration;
+import ua.at.tsvetkov.data_processor.Scheme;
 import ua.at.tsvetkov.util.Log;
 
 /**
  * Abstract class for a Request building. If not specified the request be built with basic configuration parameters specified in
- * {@link ua.at.tsvetkov.dataprocessor.DataProcessorConfiguration DataProcessorConfiguration}.
+ * {@link ua.at.tsvetkov.data_processor.DataProcessorConfiguration DataProcessorConfiguration}.
  * 
  * @author lordtao
  */
@@ -229,6 +231,16 @@ public abstract class Request {
     * @return
     */
    private String checkForSlash(String src) {
+      if (scheme.equals(Scheme.ASSETS.toString())) { // For ASSETS file names
+         if (src.startsWith(File.separator)) {
+            if (src.length() > 0)
+               return src.substring(1);
+            else
+               return "";
+         } else {
+            return src;
+         }
+      }
       if (src != null && !src.startsWith("/"))
          return '/' + src;
       else

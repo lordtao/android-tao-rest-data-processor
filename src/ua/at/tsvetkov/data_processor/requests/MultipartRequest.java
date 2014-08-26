@@ -21,7 +21,7 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.dataprocessor.requests;
+package ua.at.tsvetkov.data_processor.requests;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,7 +40,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 
-import ua.at.tsvetkov.dataprocessor.Scheme;
+import ua.at.tsvetkov.data_processor.Scheme;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 
@@ -54,8 +54,8 @@ public class MultipartRequest extends WebRequest {
    }
 
    /**
-    * Return new instance of MultipartRequest. When building a {@link ua.at.tsvetkov.dataprocessor.requests.MultipartRequest
-    * MultipartRequest} methods must be called first, before {@link ua.at.tsvetkov.dataprocessor.requests.Request Request} methods
+    * Return new instance of MultipartRequest. When building a {@link ua.at.tsvetkov.data_processor.requests.MultipartRequest
+    * MultipartRequest} methods must be called first, before {@link ua.at.tsvetkov.data_processor.requests.Request Request} methods
     * 
     * @return
     */

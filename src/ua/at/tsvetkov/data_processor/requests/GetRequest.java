@@ -21,33 +21,33 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.dataprocessor.requests;
+package ua.at.tsvetkov.data_processor.requests;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 
-import ua.at.tsvetkov.dataprocessor.Scheme;
+import ua.at.tsvetkov.data_processor.Scheme;
 
 /**
- * Delete Request builder.
+ * Get Request builder.
  * 
  * @author lordtao
  */
-public class DeleteRequest extends WebRequest {
+public class GetRequest extends WebRequest {
 
    /**
-    * Return new instance of DeleteRequest.
+    * Return new instance of GetRequest.
     * 
     * @return
     */
-   public static DeleteRequest newInstance() {
-      return new DeleteRequest();
+   public static GetRequest newInstance() {
+      return new GetRequest();
    }
 
    @Override
@@ -59,7 +59,7 @@ public class DeleteRequest extends WebRequest {
       HttpConnectionParams.setConnectionTimeout(httpParameters, configuration.getTimeout());
       HttpConnectionParams.setSoTimeout(httpParameters, configuration.getTimeout());
 
-      HttpDelete httpPost = new HttpDelete(toString());
+      HttpGet httpPost = new HttpGet(toString());
       httpPost.setParams(httpParameters);
 
       printToLogUrl();
@@ -74,7 +74,7 @@ public class DeleteRequest extends WebRequest {
     * 
     * @param url
     */
-   public DeleteRequest setUrl(String url) {
+   public GetRequest setUrl(String url) {
       this.url = url;
       return this;
    }
@@ -84,7 +84,7 @@ public class DeleteRequest extends WebRequest {
     * 
     * @return
     */
-   public DeleteRequest setHttpParameters(HttpParams httpParameters) {
+   public GetRequest setHttpParameters(HttpParams httpParameters) {
       this.httpParameters = httpParameters;
       return this;
    }
@@ -94,7 +94,7 @@ public class DeleteRequest extends WebRequest {
     * 
     * @return
     */
-   public DeleteRequest setHttpContext(HttpContext httpContext) {
+   public GetRequest setHttpContext(HttpContext httpContext) {
       this.httpContext = httpContext;
       return this;
    }
@@ -104,7 +104,7 @@ public class DeleteRequest extends WebRequest {
     * 
     * @param encoding
     */
-   public DeleteRequest setEncoding(String encoding) {
+   public GetRequest setEncoding(String encoding) {
       this.encoding = encoding;
       return this;
    }
@@ -114,7 +114,7 @@ public class DeleteRequest extends WebRequest {
     * 
     * @return
     */
-   public DeleteRequest setSchemeHttp() {
+   public GetRequest setSchemeHttp() {
       this.scheme = Scheme.HTTP.toString();
       return this;
    }
@@ -124,7 +124,7 @@ public class DeleteRequest extends WebRequest {
     * 
     * @return
     */
-   public DeleteRequest setSchemeHttps() {
+   public GetRequest setSchemeHttps() {
       this.scheme = Scheme.HTTPS.toString();
       return this;
    }
@@ -134,7 +134,7 @@ public class DeleteRequest extends WebRequest {
     * 
     * @return
     */
-   public DeleteRequest setSchemeFile() {
+   public GetRequest setSchemeFile() {
       this.scheme = Scheme.HTTPS.toString();
       return this;
    }
@@ -145,7 +145,7 @@ public class DeleteRequest extends WebRequest {
     * @param scheme
     * @return
     */
-   public DeleteRequest setScheme(String scheme) {
+   public GetRequest setScheme(String scheme) {
       this.scheme = scheme;
       return this;
    }
@@ -157,7 +157,7 @@ public class DeleteRequest extends WebRequest {
     * @param password
     * @return
     */
-   public DeleteRequest setUserInfo(String username, String password) {
+   public GetRequest setUserInfo(String username, String password) {
       this.username = username;
       this.password = password;
       return this;
@@ -169,7 +169,7 @@ public class DeleteRequest extends WebRequest {
     * @param host
     * @return
     */
-   public DeleteRequest setHost(String host) {
+   public GetRequest setHost(String host) {
       this.host = host;
       return this;
    }
@@ -180,7 +180,7 @@ public class DeleteRequest extends WebRequest {
     * @param port
     * @return
     */
-   public DeleteRequest setPort(String port) {
+   public GetRequest setPort(String port) {
       this.port = port;
       return this;
    }
@@ -191,12 +191,12 @@ public class DeleteRequest extends WebRequest {
     * @param path
     * @return
     */
-   public DeleteRequest setPath(String path) {
+   public GetRequest setPath(String path) {
       this.path = path;
       return this;
    }
 
-   public DeleteRequest setLogTag(String tag) {
+   public GetRequest setLogTag(String tag) {
       this.tag = tag;
       return this;
    }
@@ -208,7 +208,7 @@ public class DeleteRequest extends WebRequest {
     * @param value
     * @return
     */
-   public DeleteRequest addGetParam(String key, String value) {
+   public GetRequest addGetParam(String key, String value) {
       if (queries == null)
          queries = new HashMap<String, String>();
       queries.put(key, value);
@@ -222,7 +222,7 @@ public class DeleteRequest extends WebRequest {
     * @param value
     * @return
     */
-   public DeleteRequest addGetParam(String key, int value) {
+   public GetRequest addGetParam(String key, int value) {
       if (queries == null)
          queries = new HashMap<String, String>();
       queries.put(key, String.valueOf(value));
@@ -236,7 +236,7 @@ public class DeleteRequest extends WebRequest {
     * @param value
     * @return
     */
-   public DeleteRequest addGetParam(String key, long value) {
+   public GetRequest addGetParam(String key, long value) {
       if (queries == null)
          queries = new HashMap<String, String>();
       queries.put(key, String.valueOf(value));
@@ -250,7 +250,7 @@ public class DeleteRequest extends WebRequest {
     * @param value
     * @return
     */
-   public DeleteRequest addGetParam(String key, float value) {
+   public GetRequest addGetParam(String key, float value) {
       if (queries == null)
          queries = new HashMap<String, String>();
       queries.put(key, String.valueOf(value));
@@ -264,7 +264,7 @@ public class DeleteRequest extends WebRequest {
     * @param value
     * @return
     */
-   public DeleteRequest addGetParam(String key, double value) {
+   public GetRequest addGetParam(String key, double value) {
       if (queries == null)
          queries = new HashMap<String, String>();
       queries.put(key, String.valueOf(value));
@@ -277,7 +277,7 @@ public class DeleteRequest extends WebRequest {
     * @param fragment
     * @return
     */
-   public DeleteRequest addFragment(String fragment) {
+   public GetRequest addFragment(String fragment) {
       this.fragment = fragment;
       return this;
    }
@@ -287,18 +287,18 @@ public class DeleteRequest extends WebRequest {
     * 
     * @param cacheFileName
     */
-   public DeleteRequest saveToCacheFile(String cacheFileName) {
+   public GetRequest saveToCacheFile(String cacheFileName) {
       this.cacheFileName = cacheFileName;
       this.isRewriteFile = false;
       return this;
    }
 
    /**
-    * Save received data to cashe file. Rewrite it if exist.
+    * Save received data to cache file. Rewrite it if exist.
     * 
     * @param cacheFileName
     */
-   public DeleteRequest rewriteCashedFile(String cacheFileName) {
+   public GetRequest rewriteCacheFile(String cacheFileName) {
       this.cacheFileName = cacheFileName;
       this.isRewriteFile = true;
       return this;

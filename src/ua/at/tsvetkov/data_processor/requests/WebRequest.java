@@ -21,7 +21,7 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.dataprocessor.requests;
+package ua.at.tsvetkov.data_processor.requests;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +36,7 @@ import android.net.http.AndroidHttpClient;
 
 /**
  * Abstract class for a Web Request building using {@link android.net.http.AndroidHttpClient AndroidHttpClient}.</br> If not specified the
- * request be built with basic configuration parameters specified in {@link ua.at.tsvetkov.dataprocessor.DataProcessorConfiguration
+ * request be built with basic configuration parameters specified in {@link ua.at.tsvetkov.data_processor.DataProcessorConfiguration
  * DataProcessorConfiguration}.
  * 
  * @author lordtao

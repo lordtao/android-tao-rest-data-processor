@@ -21,45 +21,75 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.dataprocessor.requests;
+package ua.at.tsvetkov.data_processor.requests;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ua.at.tsvetkov.dataprocessor.ProcessingCentre;
+import ua.at.tsvetkov.data_processor.ProcessingCentre;
+import android.content.Context;
+import android.content.res.AssetManager;
 
 /**
- * The main class for the file request building. If not specified the request be built with basic configuration parameters specified in
- * {@link ua.at.tsvetkov.dataprocessor.DataProcessorConfiguration DataProcessorConfiguration}.
+ * The main class for the assets file request building. If not specified the request be built with basic configuration parameters specified
+ * in {@link ua.at.tsvetkov.data_processor.DataProcessorConfiguration DataProcessorConfiguration}.
  * 
  * @author lordtao
  */
-public abstract class FileRequest extends Request {
+public class AssetsRequest extends Request {
 
-   private FileInputStream inputStream;
+   private InputStream  inputStream;
+   private AssetManager assetManager;
 
-   protected FileRequest() {
-
+   public AssetsRequest(Context context) {
+      assetManager = context.getAssets();
    }
 
    /**
-    * Starts the request and returns a response data as InputStream
+    * Return new instance of AssetsRequest.
     * 
     * @return
-    * @throws IOException
     */
+   public static AssetsRequest newInstance(Context context) {
+      return new AssetsRequest(context);
+   }
+
+   /*
+    * (non-Javadoc)
+    * @see ua.at.tsvetkov.data_processor.requests.Request#getInputStream()
+    */
+   @Override
    public InputStream getInputStream() throws IOException {
-      inputStream = new FileInputStream(new File(toString()));
+      if (!isBuild())
+         throw new IllegalArgumentException(REQUEST_IS_NOT_BUILDED);
+
+      printToLogUrl();
+
+      startTime = System.currentTimeMillis();
+
+      inputStream = assetManager.open(toString());
       statusCode = ProcessingCentre.FILE_SUCCESS;
       return inputStream;
    }
 
-   @Override
-   public Request build() {
-      scheme = "";
-      return super.build();
+   /**
+    * Set path
+    * 
+    * @param url
+    */
+   public AssetsRequest setPath(String path) {
+      this.path = path;
+      return this;
+   }
+
+   /**
+    * Set full path
+    * 
+    * @param url
+    */
+   public AssetsRequest setFullPath(String path) {
+      this.url = path;
+      return this;
    }
 
    /**
@@ -67,7 +97,8 @@ public abstract class FileRequest extends Request {
     */
    @Override
    public void close() throws Exception {
-      inputStream.close();
+      if (inputStream != null)
+         inputStream.close();
    }
 
 }

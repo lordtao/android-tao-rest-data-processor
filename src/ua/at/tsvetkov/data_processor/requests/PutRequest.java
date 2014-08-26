@@ -21,40 +21,33 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.dataprocessor.requests;
+package ua.at.tsvetkov.data_processor.requests;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 
-import ua.at.tsvetkov.dataprocessor.Scheme;
-import ua.at.tsvetkov.util.Log;
+import ua.at.tsvetkov.data_processor.Scheme;
 
-public class PostRequest extends WebRequest {
-
-   private List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
-
-   private PostRequest() {
-
-   }
+/**
+ * Put Request builder.
+ * 
+ * @author lordtao
+ */
+public class PutRequest extends WebRequest {
 
    /**
-    * Return new instance of PostRequest. When building a {@link ua.at.tsvetkov.dataprocessor.requests.PostRequest PostRequest} methods must
-    * be called first, before {@link ua.at.tsvetkov.dataprocessor.requests.Request Request} methods
+    * Return new instance of PutRequest.
     * 
     * @return
     */
-   public static PostRequest newInstance() {
-      return new PostRequest();
+   public static PutRequest newInstance() {
+      return new PutRequest();
    }
 
    @Override
@@ -66,26 +59,12 @@ public class PostRequest extends WebRequest {
       HttpConnectionParams.setConnectionTimeout(httpParameters, configuration.getTimeout());
       HttpConnectionParams.setSoTimeout(httpParameters, configuration.getTimeout());
 
-      HttpPost httpPost = new HttpPost(toString());
-      httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, encoding));
+      HttpPut httpPost = new HttpPut(toString());
       httpPost.setParams(httpParameters);
 
       printToLogUrl();
-      printToLogPairs();
 
       return getResponce(httpPost);
-   }
-
-   /**
-    * Added POST parameter
-    * 
-    * @param name
-    * @param value
-    * @return
-    */
-   public PostRequest addPostParam(String name, String value) {
-      nameValuePairs.add(new BasicNameValuePair(name, value));
-      return this;
    }
 
    // ********************************************************************************
@@ -95,7 +74,7 @@ public class PostRequest extends WebRequest {
     * 
     * @param url
     */
-   public PostRequest setUrl(String url) {
+   public PutRequest setUrl(String url) {
       this.url = url;
       return this;
    }
@@ -105,7 +84,7 @@ public class PostRequest extends WebRequest {
     * 
     * @return
     */
-   public PostRequest setHttpParameters(HttpParams httpParameters) {
+   public PutRequest setHttpParameters(HttpParams httpParameters) {
       this.httpParameters = httpParameters;
       return this;
    }
@@ -115,7 +94,7 @@ public class PostRequest extends WebRequest {
     * 
     * @return
     */
-   public PostRequest setHttpContext(HttpContext httpContext) {
+   public PutRequest setHttpContext(HttpContext httpContext) {
       this.httpContext = httpContext;
       return this;
    }
@@ -125,7 +104,7 @@ public class PostRequest extends WebRequest {
     * 
     * @param encoding
     */
-   public PostRequest setEncoding(String encoding) {
+   public PutRequest setEncoding(String encoding) {
       this.encoding = encoding;
       return this;
    }
@@ -135,7 +114,7 @@ public class PostRequest extends WebRequest {
     * 
     * @return
     */
-   public PostRequest setSchemeHttp() {
+   public PutRequest setSchemeHttp() {
       this.scheme = Scheme.HTTP.toString();
       return this;
    }
@@ -145,7 +124,7 @@ public class PostRequest extends WebRequest {
     * 
     * @return
     */
-   public PostRequest setSchemeHttps() {
+   public PutRequest setSchemeHttps() {
       this.scheme = Scheme.HTTPS.toString();
       return this;
    }
@@ -155,8 +134,8 @@ public class PostRequest extends WebRequest {
     * 
     * @return
     */
-   public PostRequest setSchemeFile() {
-      this.scheme = Scheme.HTTPS.toString();
+   public PutRequest setSchemeFile() {
+      this.scheme = Scheme.FILE.toString();
       return this;
    }
 
@@ -166,7 +145,7 @@ public class PostRequest extends WebRequest {
     * @param scheme
     * @return
     */
-   public PostRequest setScheme(String scheme) {
+   public PutRequest setScheme(String scheme) {
       this.scheme = scheme;
       return this;
    }
@@ -178,7 +157,7 @@ public class PostRequest extends WebRequest {
     * @param password
     * @return
     */
-   public PostRequest setUserInfo(String username, String password) {
+   public PutRequest setUserInfo(String username, String password) {
       this.username = username;
       this.password = password;
       return this;
@@ -190,7 +169,7 @@ public class PostRequest extends WebRequest {
     * @param host
     * @return
     */
-   public PostRequest setHost(String host) {
+   public PutRequest setHost(String host) {
       this.host = host;
       return this;
    }
@@ -201,7 +180,7 @@ public class PostRequest extends WebRequest {
     * @param port
     * @return
     */
-   public PostRequest setPort(String port) {
+   public PutRequest setPort(String port) {
       this.port = port;
       return this;
    }
@@ -212,12 +191,12 @@ public class PostRequest extends WebRequest {
     * @param path
     * @return
     */
-   public PostRequest setPath(String path) {
+   public PutRequest setPath(String path) {
       this.path = path;
       return this;
    }
 
-   public PostRequest setLogTag(String tag) {
+   public PutRequest setLogTag(String tag) {
       this.tag = tag;
       return this;
    }
@@ -229,7 +208,7 @@ public class PostRequest extends WebRequest {
     * @param value
     * @return
     */
-   public PostRequest addGetParam(String key, String value) {
+   public PutRequest addGetParam(String key, String value) {
       if (queries == null)
          queries = new HashMap<String, String>();
       queries.put(key, value);
@@ -243,7 +222,7 @@ public class PostRequest extends WebRequest {
     * @param value
     * @return
     */
-   public PostRequest addGetParam(String key, int value) {
+   public PutRequest addGetParam(String key, int value) {
       if (queries == null)
          queries = new HashMap<String, String>();
       queries.put(key, String.valueOf(value));
@@ -257,7 +236,7 @@ public class PostRequest extends WebRequest {
     * @param value
     * @return
     */
-   public PostRequest addGetParam(String key, long value) {
+   public PutRequest addGetParam(String key, long value) {
       if (queries == null)
          queries = new HashMap<String, String>();
       queries.put(key, String.valueOf(value));
@@ -271,7 +250,7 @@ public class PostRequest extends WebRequest {
     * @param value
     * @return
     */
-   public PostRequest addGetParam(String key, float value) {
+   public PutRequest addGetParam(String key, float value) {
       if (queries == null)
          queries = new HashMap<String, String>();
       queries.put(key, String.valueOf(value));
@@ -285,7 +264,7 @@ public class PostRequest extends WebRequest {
     * @param value
     * @return
     */
-   public PostRequest addGetParam(String key, double value) {
+   public PutRequest addGetParam(String key, double value) {
       if (queries == null)
          queries = new HashMap<String, String>();
       queries.put(key, String.valueOf(value));
@@ -298,7 +277,7 @@ public class PostRequest extends WebRequest {
     * @param fragment
     * @return
     */
-   public PostRequest addFragment(String fragment) {
+   public PutRequest addFragment(String fragment) {
       this.fragment = fragment;
       return this;
    }
@@ -308,30 +287,21 @@ public class PostRequest extends WebRequest {
     * 
     * @param cacheFileName
     */
-   public PostRequest saveToCacheFile(String cacheFileName) {
+   public PutRequest saveToCacheFile(String cacheFileName) {
       this.cacheFileName = cacheFileName;
       this.isRewriteFile = false;
       return this;
    }
 
    /**
-    * Save received data to cache file. Rewrite it if exist.
+    * Save received data to cashe file. Rewrite it if exist.
     * 
     * @param cacheFileName
     */
-   public PostRequest rewriteCacheFile(String cacheFileName) {
+   public PutRequest rewriteCashedFile(String cacheFileName) {
       this.cacheFileName = cacheFileName;
       this.isRewriteFile = true;
       return this;
-   }
-
-   protected void printToLogPairs() {
-      if (configuration.isLogEnabled()) {
-         for (int i = 0; i < nameValuePairs.size(); i++) {
-            BasicNameValuePair pair = nameValuePairs.get(i);
-            Log.v("ValuePair " + pair.getName() + " = " + pair.getValue());
-         }
-      }
    }
 
 }

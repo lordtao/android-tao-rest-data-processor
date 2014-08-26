@@ -21,7 +21,7 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.dataprocessor;
+package ua.at.tsvetkov.data_processor;
 
 public enum Encoding {
    ISO_8859_1("ISO-8859-1"), US_ASCII("US-ASCII"), UTF_16("UTF-16"), UTF_16BE("UTF-16BE"), UTF_16LE("UTF-16LE"), UTF_8("UTF-8");

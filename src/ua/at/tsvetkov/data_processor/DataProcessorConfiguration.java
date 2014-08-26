@@ -21,7 +21,9 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.dataprocessor;
+package ua.at.tsvetkov.data_processor;
+
+import ua.at.tsvetkov.util.Log;
 
 /**
  * @author lordtao
@@ -53,6 +55,12 @@ public final class DataProcessorConfiguration {
       isCheckingRequestStringEnabled = builder.isCheckingRequestStringEnabled;
       isShowProcessingTime = builder.isShowProcessingTime;
       testServerUrl = builder.testServerUrl;
+      if (isLogEnabled) {
+         Log.i("isLogEnabled = " + isLogEnabled);
+         Log.i("isShowProcessingTime = " + isShowProcessingTime);
+         Log.i("httpUserAgent = " + httpUserAgent);
+         Log.i("testServerUrl = " + testServerUrl);
+      }
    }
 
    public boolean isLogEnabled() {
@@ -130,8 +138,8 @@ public final class DataProcessorConfiguration {
 
       private int     timeout                        = 0;
       public boolean  isCheckingRequestStringEnabled = false;
-      private boolean isLogEnabled                   = false;
-      public boolean  isShowProcessingTime           = false;
+      private boolean isLogEnabled                   = true;
+      public boolean  isShowProcessingTime           = true;
       private String  httpUserAgent                  = null;
       private String  host                           = null;
       private String  port                           = null;
@@ -145,6 +153,11 @@ public final class DataProcessorConfiguration {
 
       public DataProcessorConfiguration build() {
          initWithDefaultValues();
+         return new DataProcessorConfiguration(this);
+      }
+
+      public DataProcessorConfiguration buildForAssets() {
+         initWithAssetsValues();
          return new DataProcessorConfiguration(this);
       }
 
@@ -217,5 +230,28 @@ public final class DataProcessorConfiguration {
          }
       }
 
+      private void initWithAssetsValues() {
+         if (host == null) {
+            host = "";
+         }
+         if (port == null) {
+            port = "";
+         }
+         if (scheme == null) {
+            scheme = Scheme.ASSETS.toString();
+         }
+         if (encoding == null) {
+            encoding = Encoding.UTF_8.getString();
+         }
+         if (timeout == 0) {
+            timeout = DEFAULT_TIMEOUT;
+         }
+         if (httpUserAgent == null) {
+            httpUserAgent = "";
+         }
+         if (testServerUrl == null) {
+            testServerUrl = "";
+         }
+      }
    }
 }
