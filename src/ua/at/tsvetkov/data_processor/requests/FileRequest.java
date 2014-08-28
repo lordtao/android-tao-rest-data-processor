@@ -36,12 +36,21 @@ import ua.at.tsvetkov.data_processor.ProcessingCentre;
  * 
  * @author lordtao
  */
-public abstract class FileRequest extends Request {
+public class FileRequest extends Request {
 
    private FileInputStream inputStream;
 
-   protected FileRequest() {
+   public FileRequest() {
 
+   }
+
+   /**
+    * Return new instance of FileRequest.
+    * 
+    * @return
+    */
+   public static FileRequest newInstance() {
+      return new FileRequest();
    }
 
    /**
@@ -54,6 +63,26 @@ public abstract class FileRequest extends Request {
       inputStream = new FileInputStream(new File(toString()));
       statusCode = ProcessingCentre.FILE_SUCCESS;
       return inputStream;
+   }
+
+   /**
+    * Set path
+    * 
+    * @param url
+    */
+   public FileRequest setPath(String path) {
+      this.path = path;
+      return this;
+   }
+
+   /**
+    * Set full path
+    * 
+    * @param url
+    */
+   public FileRequest setFullPath(String path) {
+      this.url = path;
+      return this;
    }
 
    @Override
