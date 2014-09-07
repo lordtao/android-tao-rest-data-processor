@@ -82,27 +82,22 @@ For local file request (using FileRequest) process will be return FILE_SUCCESS o
 Request execution example:
 
 ```java
-DataProcessor.getInstance (). ExecuteAsync (request, LoginResult.class, handler);
+DataProcessor.getInstance (). ExecuteAsync (request, LoginResult.class, callback);
 ```
 
-Sample processing Handler:
+Sample of processing callback:
 
 ```java
-private DataProcessor.Callback getLoginCallback () {
-return new DataProcessor.Callback() {
+private DataProcessor.Callback<LoginResult> getLoginCallback () {
+return new DataProcessor.Callback<LoginResult>() {
 
       @Override
-      public void onFinish(final Object obj, final int what) {
+      public void onFinish(LoginResult item, int what) {
           acMainProgressLayout.setVisibility(View.GONE);
           if (what == HttpStatus.SC_OK) {
-              adapter.init(obj);
+              // you code with items
           } else {
-              Exception ex = (Exception) obj;
-              if (ex instanceof IOException) {
-                  Log.e("IO Error", ex);
-              } else {
-                  Log.e("Error", ex);
-              }
+              Log.e("Error, What=" + what);
           }
      }
 }
