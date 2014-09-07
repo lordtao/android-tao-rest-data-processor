@@ -33,7 +33,6 @@ import java.security.InvalidParameterException;
 
 import org.apache.http.HttpStatus;
 
-import ua.at.tsvetkov.data_processor.DataProcessor.Callback;
 import ua.at.tsvetkov.data_processor.interfaces.InputStreamDataInterface;
 import ua.at.tsvetkov.data_processor.interfaces.StringDataInterface;
 import ua.at.tsvetkov.data_processor.processors.InputStreamProcessor;
@@ -45,7 +44,7 @@ import ua.at.tsvetkov.util.Log;
 import android.os.Handler;
 import android.os.Looper;
 
-public class ProcessingCentre {
+public class ProcessingCentre<T> {
 
    private static final String INVALID_CLASS_PARAMETER = "Invalid class parameter. A class for data processing must implement InputStreamDataInterface or StringDataInterface either extend AbstractProcessor";
    private static final String INVALID_PARAMETER       = "Invalid parameter. Request or Class can't be eq null";
@@ -60,11 +59,11 @@ public class ProcessingCentre {
    public static final int     ERROR                   = -1;
 
    private Request             request;
-   private AbstractProcessor   processor;
+   private AbstractProcessor<T>   processor;
    private InputStream         inputStream;
    private String              cacheFileName;
-   private Class<?>            clazz;
-   private Callback            callback;
+   private Class<T>            clazz;
+   private Callback<T>            callback;
    private Thread              thread;
    private final Handler       handler;
 
@@ -72,7 +71,7 @@ public class ProcessingCentre {
     * @param request
     * @param clazz
     */
-   public ProcessingCentre(Request request, Class<?> clazz) {
+   public ProcessingCentre(Request request, Class<T> clazz) {
       if (request == null || clazz == null) {
          throw new InvalidParameterException(INVALID_PARAMETER);
       }
@@ -92,7 +91,7 @@ public class ProcessingCentre {
     * @param clazz
     * @param callback
     */
-   public ProcessingCentre(Request request, Class<?> clazz, Callback callback) {
+   public ProcessingCentre(Request request, Class<T> clazz, Callback<T> callback) {
       if (request == null || clazz == null) {
          throw new InvalidParameterException(INVALID_PARAMETER);
       }
@@ -107,7 +106,7 @@ public class ProcessingCentre {
       thread = Thread.currentThread();
    }
 
-   public Object execute() {
+   public  T execute() {
       if (!isCorrectClass()) {
          throw new InvalidParameterException(INVALID_CLASS_PARAMETER);
       }
@@ -123,15 +122,14 @@ public class ProcessingCentre {
          }
          if (processor != null) {
             processor.parse(inputStream);
-            sendMessage(request.getStatusCode(), processor.getResult());
+            sendMessage(request.getStatusCode(), (T) processor.getResult());
          } else {
-            sendMessage(request.getStatusCode(), inputStream);
+            sendMessage(request.getStatusCode(), null);
+//            sendMessage(request.getStatusCode(), inputStream); WTF???
          }
       } catch (Exception e) {
-         if (DataProcessor.getInstance().getConfiguration().isLogEnabled()) {
-            Log.e(e);
-         }
-         sendMessage(ERROR, e);
+         Log.e(e);
+         sendMessage(ERROR, null);
       } finally {
          try {
             if (inputStream != null)
@@ -146,7 +144,7 @@ public class ProcessingCentre {
          Log.v("Processing time = " + time + " ms. [ " + request + " ]");
       }
       if (processor != null)
-         return processor.getResult();
+         return (T) processor.getResult();
       else
          return null;
    }
@@ -154,7 +152,7 @@ public class ProcessingCentre {
    /**
 	 * 
 	 */
-   @SuppressWarnings("rawtypes")
+   @SuppressWarnings({ "rawtypes", "unchecked" })
    private void createProcessor() {
       try {
          if (AbstractProcessor.class.isAssignableFrom(clazz)) {
@@ -187,16 +185,16 @@ public class ProcessingCentre {
          return false;
    }
 
-   private void sendMessage(final int statusCode, final Object obj) {
+   private void sendMessage(final int statusCode, final T object) {
       if (callback != null) {
          if (thread == Thread.currentThread()) {
-            callback.onFinish(obj, statusCode);
+            callback.onFinish(object, statusCode);
          } else {
             handler.post(new Runnable() {
 
                @Override
                public void run() {
-                  callback.onFinish(obj, statusCode);
+                  callback.onFinish(object, statusCode);
                }
             });
          }
@@ -234,6 +232,18 @@ public class ProcessingCentre {
       out.close();
       inputStream.close();
       inputStream = new FileInputStream(cacheFileName);
+   }
+
+   public static interface Callback<T> {
+
+      /**
+       * Runs on the UI thread.
+       * 
+       * @param obj
+       * @param what
+       */
+      public abstract void onFinish(T obj, int what);
+
    }
 
 }

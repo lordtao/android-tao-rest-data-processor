@@ -25,6 +25,7 @@ package ua.at.tsvetkov.data_processor;
 
 //import ua.at.tsvetkov.data_processor.interfaces.InputStreamDataInterface;
 //import ua.at.tsvetkov.data_processor.interfaces.StringDataInterface;
+import ua.at.tsvetkov.data_processor.ProcessingCentre.Callback;
 import ua.at.tsvetkov.data_processor.requests.Request;
 import ua.at.tsvetkov.netchecker.Net;
 import ua.at.tsvetkov.netchecker.NetChecker;
@@ -100,50 +101,43 @@ public class DataProcessor {
 
    /**
     * Execute the request, process the results in instance of <b>clazz</b> and return result object
+    * @param <T>
+    * @param <T>
     * 
     * @param request
     * @param clazz
     * @return
     */
-   public synchronized Object execute(Request request, Class<?> clazz) {
+   public synchronized  <T> T execute(Request request, Class<T> clazz) {
       checkConfiguration();
-      return new ProcessingCentre(request, clazz).execute();
+      return new ProcessingCentre<T>(request, clazz).execute();
    }
 
    /**
     * Execute async request, process the results in instance of <b>clazz</b> and return result in callback
+    * @param <T>
+    * @param <T>
     * 
     * @param request
     * @param clazz
     * @param handler
     */
-   public synchronized void executeAsync(Request request, Class<?> clazz) {
+   public synchronized <T> void executeAsync(Request request, Class<T> clazz) {
       checkConfiguration();
-      new ProcessingCentre(request, clazz, null).executeAsync();
+      new ProcessingCentre<T>(request, clazz, null).executeAsync();
    }
 
    /**
     * Execute async request, process the results in instance of <b>clazz</b> and return result in callback
+    * @param <T>
     * 
     * @param request
     * @param clazz
     * @param handler
     */
-   public synchronized void executeAsync(Request request, Class<?> clazz, Callback callback) {
+   public synchronized <T> void executeAsync(Request request, Class<T> clazz, Callback<T> callback) {
       checkConfiguration();
-      new ProcessingCentre(request, clazz, callback).executeAsync();
-   }
-
-   public static interface Callback {
-
-      /**
-       * Runs on the UI thread.
-       * 
-       * @param obj
-       * @param what
-       */
-      public abstract void onFinish(Object obj, int what);
-
+      new ProcessingCentre<T>(request, clazz, callback).executeAsync();
    }
 
 }

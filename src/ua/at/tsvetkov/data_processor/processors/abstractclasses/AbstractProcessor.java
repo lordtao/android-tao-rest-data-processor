@@ -25,7 +25,7 @@ package ua.at.tsvetkov.data_processor.processors.abstractclasses;
 
 import java.io.InputStream;
 
-public abstract class AbstractProcessor {
+public abstract class AbstractProcessor<T> {
 
    /**
     * Parse the input stream with implemented parser.
@@ -40,6 +40,6 @@ public abstract class AbstractProcessor {
     * 
     * @return resulting object
     */
-   public abstract Object getResult();
+   public abstract T getResult();
 
 }

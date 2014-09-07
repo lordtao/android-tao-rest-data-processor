@@ -28,7 +28,7 @@ import java.io.InputStream;
 import ua.at.tsvetkov.data_processor.interfaces.InputStreamDataInterface;
 import ua.at.tsvetkov.data_processor.processors.abstractclasses.AbstractProcessor;
 
-public class InputStreamProcessor extends AbstractProcessor {
+public class InputStreamProcessor<T> extends AbstractProcessor<T> {
 
    private InputStreamDataInterface object;
 
@@ -41,9 +41,10 @@ public class InputStreamProcessor extends AbstractProcessor {
       object.fillFromInputStream(inputStream);
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   public Object getResult() {
-      return object;
+   public T getResult() {
+      return (T) object;
    }
 
 }

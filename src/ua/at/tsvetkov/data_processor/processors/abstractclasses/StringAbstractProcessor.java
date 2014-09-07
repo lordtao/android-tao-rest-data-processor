@@ -33,8 +33,9 @@ import ua.at.tsvetkov.util.Log;
  * Base String parser. Can be implemented for parse JSON, CSV and etc. data.
  * 
  * @author lordtao
+ * @param <T>
  */
-public abstract class StringAbstractProcessor extends AbstractProcessor {
+public abstract class StringAbstractProcessor<T> extends AbstractProcessor<T> {
 
    @Override
    public void parse(InputStream inputStream) throws Exception {
@@ -52,7 +53,7 @@ public abstract class StringAbstractProcessor extends AbstractProcessor {
    }
 
    @Override
-   public abstract Object getResult();
+   public abstract T getResult();
 
    /**
     * Processing the received string.

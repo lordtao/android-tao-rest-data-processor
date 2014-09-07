@@ -26,7 +26,7 @@ package ua.at.tsvetkov.data_processor.processors;
 import ua.at.tsvetkov.data_processor.interfaces.StringDataInterface;
 import ua.at.tsvetkov.data_processor.processors.abstractclasses.StringAbstractProcessor;
 
-public class StringProcessor extends StringAbstractProcessor {
+public class StringProcessor<T> extends StringAbstractProcessor<T> {
 
    private StringDataInterface object;
 
@@ -39,9 +39,10 @@ public class StringProcessor extends StringAbstractProcessor {
       object.fillFromString(src);
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   public Object getResult() {
-      return object;
+   public T getResult() {
+      return (T) object;
    }
 
 }
