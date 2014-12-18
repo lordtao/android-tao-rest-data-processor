@@ -209,7 +209,7 @@ public class ProcessingCentre<T> {
             execute();
          }
 
-      }, "").start();
+      }, "Processing center execute async request").start();
 
    }
 
