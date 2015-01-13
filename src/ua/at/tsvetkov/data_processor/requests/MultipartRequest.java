@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -48,6 +49,7 @@ public class MultipartRequest extends WebRequest {
 
    private MultipartEntityBuilder builder = MultipartEntityBuilder.create();
    private HttpEntity             entity;
+   private Header                 header;
 
    private MultipartRequest() {
 
@@ -65,8 +67,9 @@ public class MultipartRequest extends WebRequest {
 
    @Override
    public InputStream getInputStream() throws IOException {
-      if (!isBuild())
+      if (!isBuild()) {
          throw new IllegalArgumentException(REQUEST_IS_NOT_BUILDED);
+      }
       startTime = System.currentTimeMillis();
 
       HttpConnectionParams.setConnectionTimeout(httpParameters, configuration.getTimeout());
@@ -75,6 +78,9 @@ public class MultipartRequest extends WebRequest {
       HttpPost httpPost = new HttpPost(toString());
       httpPost.setEntity(entity);
       httpPost.setParams(httpParameters);
+      if (header != null) {
+         httpPost.addHeader(header);
+      }
 
       printToLogUrl();
 
@@ -174,6 +180,11 @@ public class MultipartRequest extends WebRequest {
 
    public MultipartRequest addTextBody(String name, String text, ContentType contentType) {
       builder.addTextBody(name, text, contentType);
+      return this;
+   }
+
+   public MultipartRequest setHeader(Header header) {
+      this.header = header;
       return this;
    }
 
@@ -334,8 +345,9 @@ public class MultipartRequest extends WebRequest {
     * @return
     */
    public MultipartRequest addGetParam(String key, String value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, value);
       return this;
    }
@@ -348,8 +360,9 @@ public class MultipartRequest extends WebRequest {
     * @return
     */
    public MultipartRequest addGetParam(String key, int value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, String.valueOf(value));
       return this;
    }
@@ -362,8 +375,9 @@ public class MultipartRequest extends WebRequest {
     * @return
     */
    public MultipartRequest addGetParam(String key, long value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, String.valueOf(value));
       return this;
    }
@@ -376,8 +390,9 @@ public class MultipartRequest extends WebRequest {
     * @return
     */
    public MultipartRequest addGetParam(String key, float value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, String.valueOf(value));
       return this;
    }
@@ -390,8 +405,9 @@ public class MultipartRequest extends WebRequest {
     * @return
     */
    public MultipartRequest addGetParam(String key, double value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, String.valueOf(value));
       return this;
    }

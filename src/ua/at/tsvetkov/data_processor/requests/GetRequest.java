@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
+import org.apache.http.Header;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -50,10 +51,13 @@ public class GetRequest extends WebRequest {
       return new GetRequest();
    }
 
+   private Header header;
+
    @Override
    public InputStream getInputStream() throws IOException {
-      if (!isBuild())
+      if (!isBuild()) {
          throw new IllegalArgumentException(REQUEST_IS_NOT_BUILDED);
+      }
       startTime = System.currentTimeMillis();
 
       HttpConnectionParams.setConnectionTimeout(httpParameters, configuration.getTimeout());
@@ -61,6 +65,9 @@ public class GetRequest extends WebRequest {
 
       HttpGet httpPost = new HttpGet(toString());
       httpPost.setParams(httpParameters);
+      if (header != null) {
+         httpPost.addHeader(header);
+      }
 
       printToLogUrl();
 
@@ -201,6 +208,11 @@ public class GetRequest extends WebRequest {
       return this;
    }
 
+   public GetRequest setHeader(Header header) {
+      this.header = header;
+      return this;
+   }
+
    /**
     * Add to query GET parameter.
     * 
@@ -209,8 +221,9 @@ public class GetRequest extends WebRequest {
     * @return
     */
    public GetRequest addGetParam(String key, String value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, value);
       return this;
    }
@@ -223,8 +236,9 @@ public class GetRequest extends WebRequest {
     * @return
     */
    public GetRequest addGetParam(String key, int value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, String.valueOf(value));
       return this;
    }
@@ -237,8 +251,9 @@ public class GetRequest extends WebRequest {
     * @return
     */
    public GetRequest addGetParam(String key, long value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, String.valueOf(value));
       return this;
    }
@@ -251,8 +266,9 @@ public class GetRequest extends WebRequest {
     * @return
     */
    public GetRequest addGetParam(String key, float value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, String.valueOf(value));
       return this;
    }
@@ -265,8 +281,9 @@ public class GetRequest extends WebRequest {
     * @return
     */
    public GetRequest addGetParam(String key, double value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, String.valueOf(value));
       return this;
    }

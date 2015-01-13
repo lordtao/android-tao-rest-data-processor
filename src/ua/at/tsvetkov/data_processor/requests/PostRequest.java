@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.http.Header;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
@@ -42,14 +43,15 @@ import ua.at.tsvetkov.util.Log;
 public class PostRequest extends WebRequest {
 
    private List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
+   private Header                   header;
 
    private PostRequest() {
 
    }
 
    /**
-    * Return new instance of PostRequest. When building a {@link ua.at.tsvetkov.data_processor.requests.PostRequest PostRequest} methods must
-    * be called first, before {@link ua.at.tsvetkov.data_processor.requests.Request Request} methods
+    * Return new instance of PostRequest. When building a {@link ua.at.tsvetkov.data_processor.requests.PostRequest PostRequest} methods
+    * must be called first, before {@link ua.at.tsvetkov.data_processor.requests.Request Request} methods
     * 
     * @return
     */
@@ -59,8 +61,9 @@ public class PostRequest extends WebRequest {
 
    @Override
    public InputStream getInputStream() throws IOException {
-      if (!isBuild())
+      if (!isBuild()) {
          throw new IllegalArgumentException(REQUEST_IS_NOT_BUILDED);
+      }
       startTime = System.currentTimeMillis();
 
       HttpConnectionParams.setConnectionTimeout(httpParameters, configuration.getTimeout());
@@ -69,6 +72,9 @@ public class PostRequest extends WebRequest {
       HttpPost httpPost = new HttpPost(toString());
       httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, encoding));
       httpPost.setParams(httpParameters);
+      if (header != null) {
+         httpPost.addHeader(header);
+      }
 
       printToLogUrl();
       printToLogPairs();
@@ -222,6 +228,11 @@ public class PostRequest extends WebRequest {
       return this;
    }
 
+   public PostRequest setHeader(Header header) {
+      this.header = header;
+      return this;
+   }
+
    /**
     * Add to query GET parameter.
     * 
@@ -230,8 +241,9 @@ public class PostRequest extends WebRequest {
     * @return
     */
    public PostRequest addGetParam(String key, String value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, value);
       return this;
    }
@@ -244,8 +256,9 @@ public class PostRequest extends WebRequest {
     * @return
     */
    public PostRequest addGetParam(String key, int value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, String.valueOf(value));
       return this;
    }
@@ -258,8 +271,9 @@ public class PostRequest extends WebRequest {
     * @return
     */
    public PostRequest addGetParam(String key, long value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, String.valueOf(value));
       return this;
    }
@@ -272,8 +286,9 @@ public class PostRequest extends WebRequest {
     * @return
     */
    public PostRequest addGetParam(String key, float value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, String.valueOf(value));
       return this;
    }
@@ -286,8 +301,9 @@ public class PostRequest extends WebRequest {
     * @return
     */
    public PostRequest addGetParam(String key, double value) {
-      if (queries == null)
+      if (queries == null) {
          queries = new HashMap<String, String>();
+      }
       queries.put(key, String.valueOf(value));
       return this;
    }
