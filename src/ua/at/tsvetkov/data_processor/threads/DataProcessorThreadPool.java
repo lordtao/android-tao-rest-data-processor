@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Alexandr Tsvetkov.
+ * Copyright (c) 2015 Alexandr Tsvetkov.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     Alexandr Tsvetkov - initial API and implementation
  *
  * Project:
- *     TAO Data Processor
+ *     tao-data-processor
  *
  * License agreement:
  *
@@ -21,19 +21,20 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.data_processor;
+package ua.at.tsvetkov.data_processor.threads;
 
-public enum Encoding {
-   ISO_8859_1("ISO-8859-1"), US_ASCII("US-ASCII"), UTF_16("UTF-16"), UTF_16BE("UTF-16BE"), UTF_16LE("UTF-16LE"), UTF_8("UTF-8");
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
-   private String mEncoding;
+/**
+ * @author lordtao
+ */
+public class DataProcessorThreadPool extends ThreadPoolExecutor {
 
-   private Encoding(String encoding) {
-      this.mEncoding = encoding;
-   }
-
-   public String getString() {
-      return mEncoding;
+   public DataProcessorThreadPool() {
+      super(Runtime.getRuntime().availableProcessors() * 2, Runtime.getRuntime().availableProcessors() * 2, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
+            new DataProcessingThreadFactory());
    }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Alexandr Tsvetkov.
+ * Copyright (c) 2015 Alexandr Tsvetkov.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     Alexandr Tsvetkov - initial API and implementation
  *
  * Project:
- *     TAO Data Processor
+ *     tao-data-processor
  *
  * License agreement:
  *
@@ -21,29 +21,41 @@
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
  ******************************************************************************/
-package ua.at.tsvetkov.data_processor;
+package ua.at.tsvetkov.data_processor.threads;
+
+import java.util.concurrent.ThreadFactory;
+
+import ua.at.tsvetkov.util.Log;
 
 /**
- * Protocol for URL like "http" or "file". This is also known as the scheme. The returned string is lower case.
- * 
  * @author lordtao
  */
-public enum Scheme {
-   HTTP("http://"), HTTPS("https://"), FILE("file://"), ASSETS("");
-
-   private String mType;
-
-   private Scheme(String type) {
-      this.mType = type;
-   }
+public class DataProcessingThreadFactory implements ThreadFactory {
 
    /**
-    * Returns the protocol for URL like "http://" or "file://". This is also known as the scheme. The returned string is lower case.
-    * 
-    * @return
+    * Lower priority then UI thread priority (5)
+    */
+   private static final int    THREAD_PRIORITY = 4;
+   public static final String THREAD_NAME     = "Data Processor async request";
+
+   /*
+    * (non-Javadoc)
+    * @see java.util.concurrent.ThreadFactory#newThread(java.lang.Runnable)
     */
    @Override
-   public String toString() {
-      return mType;
+   public Thread newThread(Runnable r) {
+      Thread thread = new Thread(r);
+      thread.setPriority(THREAD_PRIORITY);
+      thread.setName(THREAD_NAME);
+      thread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+
+         @Override
+         public void uncaughtException(Thread thread, Throwable ex) {
+            Log.threadInfo(thread, ex);
+         }
+
+      });
+      return thread;
    }
+
 }

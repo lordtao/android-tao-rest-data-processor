@@ -41,7 +41,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 
-import ua.at.tsvetkov.data_processor.Scheme;
+import ua.at.tsvetkov.data_processor.helpers.Scheme;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 

@@ -33,7 +33,8 @@ import java.util.Map.Entry;
 
 import ua.at.tsvetkov.data_processor.DataProcessor;
 import ua.at.tsvetkov.data_processor.DataProcessorConfiguration;
-import ua.at.tsvetkov.data_processor.Scheme;
+import ua.at.tsvetkov.data_processor.helpers.Scheme;
+import ua.at.tsvetkov.util.Const;
 import ua.at.tsvetkov.util.Log;
 
 /**
@@ -44,10 +45,14 @@ import ua.at.tsvetkov.util.Log;
  */
 public abstract class Request {
 
-   protected static final String        CONFIGURATION_ERROR    = "DataProcessor configuration is not initialized.";
-   protected static final String        REQUEST_IS_NOT_BUILDED = "Request is not builded";
+   private static final String          CALL_URL                  = " CALL URL: ";
+   private static final String          REQUEST_IS_NOT_BUILD      = "Request is not build and eq null.";
+   private static final String          WRONG_URL                 = "Wrong URL";
+   private static final String          PASSWORD_IS_NOT_SPECIFIED = "Username is available in the request, but the password is not specified";
+   protected static final String        CONFIGURATION_ERROR       = "DataProcessor configuration is not initialized.";
+   protected static final String        REQUEST_IS_NOT_BUILDED    = "Request is not builded";
 
-   protected DataProcessorConfiguration configuration          = DataProcessor.getInstance().getConfiguration();
+   protected DataProcessorConfiguration configuration             = DataProcessor.getInstance().getConfiguration();
    protected HashMap<String, String>    queries;
    protected StringBuilder              sb;
    protected String                     scheme;
@@ -105,7 +110,7 @@ public abstract class Request {
             sb.append(username);
             sb.append(':');
             if (password != null && configuration.isLogEnabled()) {
-               Log.w("Username is available in the request, but the password is not specified");
+               Log.w(PASSWORD_IS_NOT_SPECIFIED);
             }
             sb.append(password);
             sb.append('@');
@@ -129,8 +134,9 @@ public abstract class Request {
                sb.append(query.getKey());
                sb.append('=');
                sb.append(query.getValue());
-               if (count > 0)
+               if (count > 0) {
                   sb.append('&');
+               }
             }
             if (fragment != null) {
                sb.append('#');
@@ -198,7 +204,7 @@ public abstract class Request {
             try {
                return URLEncoder.encode(sb.toString(), encoding);
             } catch (UnsupportedEncodingException e) {
-               Log.e("Wrong URL", e);
+               Log.e(WRONG_URL, e);
                return "";
             }
          } else {
@@ -206,7 +212,7 @@ public abstract class Request {
          }
       } else {
          if (configuration.isLogEnabled()) {
-            Log.w("Request is not build and eq null.");
+            Log.w(REQUEST_IS_NOT_BUILD);
          }
          return null;
       }
@@ -217,10 +223,11 @@ public abstract class Request {
     */
    protected void printToLogUrl() {
       if (configuration.isLogEnabled()) {
-         if (tag == null)
-            Log.v("-> CALL URL: " + toString());
-         else
-            Log.v("-> " + tag + " : " + toString());
+         if (tag == null) {
+            Log.v(Const.AR_R + CALL_URL + toString());
+         } else {
+            Log.v(Const.AR_R + " " + tag + " : " + toString());
+         }
       }
    }
 
@@ -233,18 +240,20 @@ public abstract class Request {
    private String checkForSlash(String src) {
       if (scheme.equals(Scheme.ASSETS.toString())) { // For ASSETS file names
          if (src.startsWith(File.separator)) {
-            if (src.length() > 0)
+            if (src.length() > 0) {
                return src.substring(1);
-            else
+            } else {
                return "";
+            }
          } else {
             return src;
          }
       }
-      if (src != null && !src.startsWith("/"))
+      if (src != null && !src.startsWith("/")) {
          return '/' + src;
-      else
+      } else {
          return src;
+      }
    }
 
 }

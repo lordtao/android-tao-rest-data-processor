@@ -28,7 +28,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ua.at.tsvetkov.data_processor.ProcessingCentre;
+import ua.at.tsvetkov.data_processor.processors.ProcessingCentre;
 
 /**
  * The main class for the file request building. If not specified the request be built with basic configuration parameters specified in

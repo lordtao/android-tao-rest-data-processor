@@ -26,7 +26,7 @@ package ua.at.tsvetkov.data_processor.requests;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ua.at.tsvetkov.data_processor.ProcessingCentre;
+import ua.at.tsvetkov.data_processor.processors.ProcessingCentre;
 import android.content.Context;
 import android.content.res.AssetManager;
 
