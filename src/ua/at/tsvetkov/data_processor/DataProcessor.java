@@ -25,8 +25,12 @@ package ua.at.tsvetkov.data_processor;
 
 //import ua.at.tsvetkov.data_processor.interfaces.InputStreamDataInterface;
 //import ua.at.tsvetkov.data_processor.interfaces.StringDataInterface;
-import ua.at.tsvetkov.data_processor.ProcessingCentre.Callback;
+import java.util.List;
+
+import ua.at.tsvetkov.data_processor.processors.ProcessingCentre;
+import ua.at.tsvetkov.data_processor.processors.ProcessingCentre.Callback;
 import ua.at.tsvetkov.data_processor.requests.Request;
+import ua.at.tsvetkov.data_processor.threads.DataProcessorThreadPool;
 import ua.at.tsvetkov.netchecker.Net;
 import ua.at.tsvetkov.netchecker.NetChecker;
 import ua.at.tsvetkov.netchecker.NetStatus;
@@ -47,6 +51,7 @@ public class DataProcessor {
    private static DataProcessor       instance;
 
    private DataProcessorConfiguration configuration;
+   private DataProcessorThreadPool    threadPool;
 
    public static DataProcessor getInstance() {
       if (instance == null) {
@@ -68,11 +73,16 @@ public class DataProcessor {
          throw new IllegalArgumentException(ERROR_INIT_CONFIG_WITH_NULL);
       }
       if (this.configuration == null) {
-         if (configuration.isLogEnabled)
+         if (configuration.isLogEnabled) {
             Log.d(LOG_INIT_CONFIG);
+         }
          this.configuration = configuration;
       } else {
          Log.w(WARNING_RE_INIT_CONFIG);
+      }
+      if (configuration.isThreadPoolEnabled) {
+
+         threadPool = new DataProcessorThreadPool();
       }
    }
 
@@ -97,47 +107,69 @@ public class DataProcessor {
       return Net.isAccessible(activity, configuration.getTestServerUrl(), configuration.getTimeout());
    }
 
+   public DataProcessorThreadPool getThreadPool() {
+      return threadPool;
+   }
+
+   /**
+    * Initiates an orderly shutdown in which previously submitted tasks are executed, but no new tasks will be accepted. Invocation has no
+    * additional effect if already shut down.
+    */
+   public void shutdown() {
+      threadPool.shutdown();
+   }
+
+   /**
+    * Attempts to stop all actively executing tasks, halts the processing of waiting tasks, and returns a list of the tasks that were
+    * awaiting execution. These tasks are drained (removed) from the task queue upon return from this method.
+    * 
+    * @return list of tasks that never commenced execution
+    */
+   public List<Runnable> shutdownNow() {
+      return threadPool.shutdownNow();
+   }
+
    // ******************************** Execution methods ********************************
 
    /**
     * Execute the request, process the results in instance of <b>clazz</b> and return result object
-    * @param <T>
-    * @param <T>
     * 
+    * @param <T>
+    * @param <T>
     * @param request
     * @param clazz
     * @return
     */
-   public synchronized  <T> T execute(Request request, Class<T> clazz) {
+   public synchronized <T> T execute(Request request, Class<T> clazz) {
       checkConfiguration();
-      return new ProcessingCentre<T>(request, clazz).execute();
+      return new ProcessingCentre<T>(this, request, clazz).execute();
    }
 
    /**
     * Execute async request, process the results in instance of <b>clazz</b> and return result in callback
-    * @param <T>
-    * @param <T>
     * 
+    * @param <T>
+    * @param <T>
     * @param request
     * @param clazz
     * @param handler
     */
    public synchronized <T> void executeAsync(Request request, Class<T> clazz) {
       checkConfiguration();
-      new ProcessingCentre<T>(request, clazz, null).executeAsync();
+      new ProcessingCentre<T>(this, request, clazz, null).executeAsync();
    }
 
    /**
     * Execute async request, process the results in instance of <b>clazz</b> and return result in callback
-    * @param <T>
     * 
+    * @param <T>
     * @param request
     * @param clazz
     * @param handler
     */
    public synchronized <T> void executeAsync(Request request, Class<T> clazz, Callback<T> callback) {
       checkConfiguration();
-      new ProcessingCentre<T>(request, clazz, callback).executeAsync();
+      new ProcessingCentre<T>(this, request, clazz, callback).executeAsync();
    }
 
 }

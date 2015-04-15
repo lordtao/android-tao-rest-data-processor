@@ -33,7 +33,7 @@ import java.util.Map.Entry;
 
 import ua.at.tsvetkov.data_processor.DataProcessor;
 import ua.at.tsvetkov.data_processor.DataProcessorConfiguration;
-import ua.at.tsvetkov.data_processor.Scheme;
+import ua.at.tsvetkov.data_processor.helpers.Scheme;
 import ua.at.tsvetkov.util.Log;
 
 /**

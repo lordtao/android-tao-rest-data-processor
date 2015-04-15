@@ -23,6 +23,8 @@
  ******************************************************************************/
 package ua.at.tsvetkov.data_processor;
 
+import ua.at.tsvetkov.data_processor.helpers.Encoding;
+import ua.at.tsvetkov.data_processor.helpers.Scheme;
 import ua.at.tsvetkov.util.Log;
 
 /**
@@ -36,6 +38,7 @@ public final class DataProcessorConfiguration {
    protected boolean          isLogEnabled;
    protected boolean          isCheckingRequestStringEnabled;
    protected boolean          isShowProcessingTime;
+   protected boolean          isThreadPoolEnabled;
    protected int              timeout;
    protected String           httpUserAgent;
    protected String           host;
@@ -46,8 +49,9 @@ public final class DataProcessorConfiguration {
 
    private DataProcessorConfiguration(final Builder builder) {
       isLogEnabled = builder.isLogEnabled;
-      timeout = builder.timeout;
       httpUserAgent = builder.httpUserAgent;
+      timeout = builder.timeout;
+      isThreadPoolEnabled = builder.isThreadPoolEnabled;
       host = builder.host;
       port = builder.port;
       scheme = builder.scheme;
@@ -136,6 +140,7 @@ public final class DataProcessorConfiguration {
 
    public static class Builder {
 
+      public boolean  isThreadPoolEnabled            = true;
       private int     timeout                        = 0;
       public boolean  isCheckingRequestStringEnabled = false;
       private boolean isLogEnabled                   = true;
@@ -168,6 +173,11 @@ public final class DataProcessorConfiguration {
 
       public Builder setLogEnabled(boolean isEnabled) {
          isLogEnabled = isEnabled;
+         return this;
+      }
+
+      public Builder setThreadPoolEnabled(boolean isEnabled) {
+         isThreadPoolEnabled = isEnabled;
          return this;
       }
 
