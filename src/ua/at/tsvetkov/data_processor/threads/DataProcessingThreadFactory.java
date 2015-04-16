@@ -35,7 +35,7 @@ public class DataProcessingThreadFactory implements ThreadFactory {
    /**
     * Lower priority then UI thread priority (5)
     */
-   private static final int    THREAD_PRIORITY = 4;
+   private static final int   THREAD_PRIORITY = 4;
    public static final String THREAD_NAME     = "Data Processor async request";
 
    /*
