@@ -8,6 +8,5 @@
 	<classpathentry kind="lib" path="libs/httpmime-4.3.jar"/>
 	<classpathentry kind="lib" path="libs/jackson-core-2.4.1.jar"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="C:/Android/android-sdk/extras/android/support/v4/android-support-v4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
