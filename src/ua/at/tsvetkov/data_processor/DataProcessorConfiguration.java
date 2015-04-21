@@ -34,6 +34,7 @@ public final class DataProcessorConfiguration {
 
    public static final String HTTP_ANDROID_USER_AGENT = "Mozilla/5.0 (Linux; U; Android 2.2.1; en-us; Nexus One Build/FRG83) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1";
    public static final int    DEFAULT_TIMEOUT         = 5000;
+   public static final int    DEFAULT_CACHE_SIZE      = 10;
 
    protected boolean          isLogEnabled;
    protected boolean          isCheckingRequestStringEnabled;
@@ -46,6 +47,8 @@ public final class DataProcessorConfiguration {
    protected String           scheme;
    protected String           encoding;
    protected String           testServerUrl;
+   private boolean            isCacheEnabled;
+   private int                cacheSize;
 
    private DataProcessorConfiguration(final Builder builder) {
       isLogEnabled = builder.isLogEnabled;
@@ -59,9 +62,16 @@ public final class DataProcessorConfiguration {
       isCheckingRequestStringEnabled = builder.isCheckingRequestStringEnabled;
       isShowProcessingTime = builder.isShowProcessingTime;
       testServerUrl = builder.testServerUrl;
+      isCacheEnabled = builder.isCacheEnabled;
+      cacheSize = builder.cacheSize;
       if (isLogEnabled) {
          Log.i("isLogEnabled = " + isLogEnabled);
          Log.i("isShowProcessingTime = " + isShowProcessingTime);
+         if (isCacheEnabled) {
+            Log.i("isCacheEnabled = true, cacheSize = " + cacheSize);
+         } else {
+            Log.i("isCacheEnabled = false");
+         }
          Log.i("httpUserAgent = " + httpUserAgent);
          Log.i("testServerUrl = " + testServerUrl);
       }
@@ -79,8 +89,16 @@ public final class DataProcessorConfiguration {
       return isShowProcessingTime;
    }
 
+   public boolean isCacheEnabled() {
+      return isCacheEnabled;
+   }
+
    public int getTimeout() {
       return timeout;
+   }
+
+   public int getCacheSize() {
+      return cacheSize;
    }
 
    public String getHttpUserAgent() {
@@ -140,6 +158,8 @@ public final class DataProcessorConfiguration {
 
    public static class Builder {
 
+      public int      cacheSize                      = DEFAULT_CACHE_SIZE;
+      public boolean  isCacheEnabled                 = true;
       public boolean  isThreadPoolEnabled            = true;
       private int     timeout                        = 0;
       public boolean  isCheckingRequestStringEnabled = false;
@@ -188,6 +208,16 @@ public final class DataProcessorConfiguration {
 
       public Builder setShowProcessingTime(boolean isEnabled) {
          isShowProcessingTime = isEnabled;
+         return this;
+      }
+
+      public Builder setCacheEnabled(boolean isEnabled) {
+         isCacheEnabled = isEnabled;
+         return this;
+      }
+
+      public Builder setCacheSize(int size) {
+         cacheSize = size;
          return this;
       }
 

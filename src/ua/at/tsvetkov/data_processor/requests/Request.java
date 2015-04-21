@@ -218,6 +218,144 @@ public abstract class Request {
       }
    }
 
+   /*
+    * (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((cacheFileName == null) ? 0 : cacheFileName.hashCode());
+      result = prime * result + ((encoding == null) ? 0 : encoding.hashCode());
+      result = prime * result + ((fragment == null) ? 0 : fragment.hashCode());
+      result = prime * result + ((host == null) ? 0 : host.hashCode());
+      result = prime * result + (isRewriteFile ? 1231 : 1237);
+      result = prime * result + ((password == null) ? 0 : password.hashCode());
+      result = prime * result + ((path == null) ? 0 : path.hashCode());
+      result = prime * result + ((port == null) ? 0 : port.hashCode());
+      result = prime * result + ((queries == null) ? 0 : queries.hashCode());
+      result = prime * result + ((scheme == null) ? 0 : scheme.hashCode());
+      result = prime * result + (int) (startTime ^ (startTime >>> 32));
+      result = prime * result + statusCode;
+      result = prime * result + ((tag == null) ? 0 : tag.hashCode());
+      result = prime * result + ((url == null) ? 0 : url.hashCode());
+      result = prime * result + ((username == null) ? 0 : username.hashCode());
+      return result;
+   }
+
+   /*
+    * (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      Request other = (Request) obj;
+      if (cacheFileName == null) {
+         if (other.cacheFileName != null) {
+            return false;
+         }
+      } else if (!cacheFileName.equals(other.cacheFileName)) {
+         return false;
+      }
+      if (encoding == null) {
+         if (other.encoding != null) {
+            return false;
+         }
+      } else if (!encoding.equals(other.encoding)) {
+         return false;
+      }
+      if (fragment == null) {
+         if (other.fragment != null) {
+            return false;
+         }
+      } else if (!fragment.equals(other.fragment)) {
+         return false;
+      }
+      if (host == null) {
+         if (other.host != null) {
+            return false;
+         }
+      } else if (!host.equals(other.host)) {
+         return false;
+      }
+      if (isRewriteFile != other.isRewriteFile) {
+         return false;
+      }
+      if (password == null) {
+         if (other.password != null) {
+            return false;
+         }
+      } else if (!password.equals(other.password)) {
+         return false;
+      }
+      if (path == null) {
+         if (other.path != null) {
+            return false;
+         }
+      } else if (!path.equals(other.path)) {
+         return false;
+      }
+      if (port == null) {
+         if (other.port != null) {
+            return false;
+         }
+      } else if (!port.equals(other.port)) {
+         return false;
+      }
+      if (queries == null) {
+         if (other.queries != null) {
+            return false;
+         }
+      } else if (!queries.equals(other.queries)) {
+         return false;
+      }
+      if (scheme == null) {
+         if (other.scheme != null) {
+            return false;
+         }
+      } else if (!scheme.equals(other.scheme)) {
+         return false;
+      }
+      if (startTime != other.startTime) {
+         return false;
+      }
+      if (statusCode != other.statusCode) {
+         return false;
+      }
+      if (tag == null) {
+         if (other.tag != null) {
+            return false;
+         }
+      } else if (!tag.equals(other.tag)) {
+         return false;
+      }
+      if (url == null) {
+         if (other.url != null) {
+            return false;
+         }
+      } else if (!url.equals(other.url)) {
+         return false;
+      }
+      if (username == null) {
+         if (other.username != null) {
+            return false;
+         }
+      } else if (!username.equals(other.username)) {
+         return false;
+      }
+      return true;
+   }
+
    /**
     * Print to log builded URL with tag.
     */

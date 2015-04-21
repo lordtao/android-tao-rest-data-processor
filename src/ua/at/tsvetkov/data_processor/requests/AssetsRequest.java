@@ -26,7 +26,7 @@ package ua.at.tsvetkov.data_processor.requests;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ua.at.tsvetkov.data_processor.processors.ProcessingCentre;
+import ua.at.tsvetkov.data_processor.processors.Processor;
 import android.content.Context;
 import android.content.res.AssetManager;
 
@@ -68,7 +68,7 @@ public class AssetsRequest extends Request {
       startTime = System.currentTimeMillis();
 
       inputStream = assetManager.open(toString());
-      statusCode = ProcessingCentre.FILE_SUCCESS;
+      statusCode = Processor.FILE_SUCCESS;
       return inputStream;
    }
 

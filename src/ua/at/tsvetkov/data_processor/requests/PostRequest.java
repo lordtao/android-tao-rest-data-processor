@@ -350,4 +350,42 @@ public class PostRequest extends WebRequest {
       }
    }
 
+   /*
+    * (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result + ((nameValuePairs == null) ? 0 : nameValuePairs.hashCode());
+      return result;
+   }
+
+   /*
+    * (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (!super.equals(obj)) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      PostRequest other = (PostRequest) obj;
+      if (nameValuePairs == null) {
+         if (other.nameValuePairs != null) {
+            return false;
+         }
+      } else if (!nameValuePairs.equals(other.nameValuePairs)) {
+         return false;
+      }
+      return true;
+   }
+
 }

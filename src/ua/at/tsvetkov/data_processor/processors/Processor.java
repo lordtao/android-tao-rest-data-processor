@@ -45,7 +45,7 @@ import ua.at.tsvetkov.util.Log;
 import android.os.Handler;
 import android.os.Looper;
 
-public class ProcessingCentre<T> {
+public class Processor<T> {
 
    private static final String  FILE_EXIST              = "File exist: ";
    private static final String  CAN_T_CREATE            = "Can't create ";
@@ -74,13 +74,16 @@ public class ProcessingCentre<T> {
    private Thread               thread;
    private final Handler        handler;
    private DataProcessor        dataProcessor;
+   private T                    result;
+   private boolean              isFinished              = false;
+   private int                  statusCode;
 
    /**
     * @param dataProcessor
     * @param request
     * @param clazz
     */
-   public ProcessingCentre(DataProcessor dataProcessor, Request request, Class<T> clazz) {
+   public Processor(DataProcessor dataProcessor, Request request, Class<T> clazz) {
       if (request == null || clazz == null) {
          throw new InvalidParameterException(INVALID_PARAMETER);
       }
@@ -103,7 +106,7 @@ public class ProcessingCentre<T> {
     * @param clazz
     * @param callback
     */
-   public ProcessingCentre(DataProcessor dataProcessor, Request request, Class<T> clazz, Callback<T> callback) {
+   public Processor(DataProcessor dataProcessor, Request request, Class<T> clazz, Callback<T> callback) {
       if (request == null || clazz == null) {
          throw new InvalidParameterException(INVALID_PARAMETER);
       }
@@ -142,7 +145,7 @@ public class ProcessingCentre<T> {
             // sendMessage(request.getStatusCode(), inputStream); WTF???
          }
       } catch (Exception e) {
-         Log.e(e);
+         Log.e("Error in request: " + request.toString(), e);
          sendMessage(ERROR, null);
       } finally {
          try {
@@ -204,6 +207,8 @@ public class ProcessingCentre<T> {
    }
 
    private void sendMessage(final int statusCode, final T object) {
+      setResult(object);
+      setStatus(statusCode);
       if (callback != null) {
          if (thread == Thread.currentThread()) {
             callback.onFinish(object, statusCode);
@@ -255,6 +260,62 @@ public class ProcessingCentre<T> {
       out.close();
       inputStream.close();
       inputStream = new FileInputStream(cacheFileName);
+   }
+
+   public void setCallback(Callback<T> callback) {
+      this.callback = callback;
+   }
+
+   /**
+    * Return resulting object
+    * 
+    * @return
+    */
+   public T getResult() {
+      return result;
+   }
+
+   /**
+    * @param statusCode
+    * @return
+    */
+   public int getStatus() {
+      return statusCode;
+   }
+
+   /**
+    * Return Data class
+    * 
+    * @return
+    */
+   public Class<?> getDataClass() {
+      return clazz.getClass();
+   }
+
+   /**
+    * @return
+    */
+   public boolean isFinished() {
+      return isFinished;
+   }
+
+   /**
+    * Redelivery result in callback
+    */
+   public void redelivery() {
+      sendMessage(statusCode, result);
+   }
+
+   private T setResult(T result) {
+      isFinished = true;
+      return this.result = result;
+   }
+
+   /**
+    * @param statusCode
+    */
+   private void setStatus(int statusCode) {
+      this.statusCode = statusCode;
    }
 
    public static interface Callback<T> {

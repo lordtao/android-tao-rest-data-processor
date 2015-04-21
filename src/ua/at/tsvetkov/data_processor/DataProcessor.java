@@ -27,16 +27,19 @@ package ua.at.tsvetkov.data_processor;
 //import ua.at.tsvetkov.data_processor.interfaces.StringDataInterface;
 import java.util.List;
 
-import ua.at.tsvetkov.data_processor.processors.ProcessingCentre;
-import ua.at.tsvetkov.data_processor.processors.ProcessingCentre.Callback;
+import ua.at.tsvetkov.data_processor.processors.Processor;
+import ua.at.tsvetkov.data_processor.processors.Processor.Callback;
 import ua.at.tsvetkov.data_processor.requests.Request;
 import ua.at.tsvetkov.data_processor.threads.DataProcessorThreadPool;
 import ua.at.tsvetkov.netchecker.Net;
 import ua.at.tsvetkov.netchecker.NetChecker;
 import ua.at.tsvetkov.netchecker.NetStatus;
+import ua.at.tsvetkov.util.Const;
 import ua.at.tsvetkov.util.Log;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Looper;
+import android.support.v4.util.LruCache;
 
 /**
  * @author lordtao
@@ -52,6 +55,7 @@ public class DataProcessor {
 
    private DataProcessorConfiguration configuration;
    private DataProcessorThreadPool    threadPool;
+   private ProcessorsCache            processors;
 
    public static DataProcessor getInstance() {
       if (instance == null) {
@@ -83,6 +87,9 @@ public class DataProcessor {
       if (configuration.isThreadPoolEnabled) {
 
          threadPool = new DataProcessorThreadPool();
+      }
+      if (configuration.isCacheEnabled()) {
+         processors = new ProcessorsCache(configuration.getCacheSize());
       }
    }
 
@@ -117,6 +124,7 @@ public class DataProcessor {
     */
    public void shutdown() {
       threadPool.shutdown();
+      Log.v("Thread pool will shutdown.");
    }
 
    /**
@@ -126,6 +134,7 @@ public class DataProcessor {
     * @return list of tasks that never commenced execution
     */
    public List<Runnable> shutdownNow() {
+      Log.v("Thread pool will shutdown now.");
       return threadPool.shutdownNow();
    }
 
@@ -135,41 +144,123 @@ public class DataProcessor {
     * Execute the request, process the results in instance of <b>clazz</b> and return result object
     * 
     * @param <T>
-    * @param <T>
     * @param request
     * @param clazz
     * @return
     */
    public synchronized <T> T execute(Request request, Class<T> clazz) {
       checkConfiguration();
-      return new ProcessingCentre<T>(this, request, clazz).execute();
+      return new Processor<T>(this, request, clazz).execute();
    }
 
    /**
-    * Execute async request, process the results in instance of <b>clazz</b> and return result in callback
+    * Execute async request, process the results in instance of <b>clazz</b> and return created clazz in callback
     * 
-    * @param <T>
     * @param <T>
     * @param request
     * @param clazz
-    * @param handler
+    * @param callback
     */
    public synchronized <T> void executeAsync(Request request, Class<T> clazz) {
       checkConfiguration();
-      new ProcessingCentre<T>(this, request, clazz, null).executeAsync();
+      new Processor<T>(this, request, clazz, null).executeAsync();
    }
 
    /**
-    * Execute async request, process the results in instance of <b>clazz</b> and return result in callback
+    * Execute async request, process the results in instance of <b>clazz</b> and return created clazz in callback
     * 
     * @param <T>
     * @param request
     * @param clazz
-    * @param handler
+    * @param callback
     */
    public synchronized <T> void executeAsync(Request request, Class<T> clazz, Callback<T> callback) {
       checkConfiguration();
-      new ProcessingCentre<T>(this, request, clazz, callback).executeAsync();
+      new Processor<T>(this, request, clazz, callback).executeAsync();
    }
 
+   /**
+    * Execute async request, process the results in instance of <b>clazz</b> and return created clazz in callback. Use LruCache for store
+    * result. If the result was loaded earlier then returns it.
+    * 
+    * @param <T>
+    * @param key for identification of the Request for saving in LruCache
+    * @param request
+    * @param clazz
+    * @param callback
+    */
+   public synchronized <T> void executeCachedAsync(int key, Request request, Class<T> clazz, Callback<T> callback) {
+      executeCachedAsync(key, request, clazz, callback, false);
+   }
+
+   /**
+    * Execute async request, process the results in instance of <b>clazz</b> and return created clazz in callback. Use LruCache for store
+    * result. Ignore the previous result if it was loaded. Forcing the download.
+    * 
+    * @param <T>
+    * @param key for identification of the Request for saving in LruCache
+    * @param request
+    * @param clazz
+    * @param callback
+    */
+   public synchronized <T> void executeCachedAsyncForce(int key, Request request, Class<T> clazz, Callback<T> callback) {
+      executeCachedAsync(key, request, clazz, callback, true);
+   }
+
+   /**
+    * Execute async request, process the results in instance of <b>clazz</b> and return created clazz in callback. Use LruCache for store
+    * result. <code>isForce</code> specifies whether to force the download.
+    * 
+    * @param <T>
+    * @param key for identification of the Request for saving in LruCache
+    * @param request
+    * @param clazz
+    * @param callback
+    * @param isForce
+    */
+   public synchronized <T> void executeCachedAsync(int key, Request request, Class<T> clazz, Callback<T> callback, boolean isForce) {
+      if (Looper.getMainLooper().getThread() != Thread.currentThread()) {
+         throw new IllegalStateException("Must be executed from UI thread.");
+      }
+      checkConfiguration();
+      if (!configuration.isCacheEnabled()) {
+         throw new IllegalArgumentException("Wrong cache settings: cache is not enabled");
+      }
+      if (!configuration.isCacheEnabled() || configuration.getCacheSize() <= 0) {
+         throw new IllegalArgumentException("Wrong cache settings: cacheSize = " + configuration.getCacheSize());
+      }
+      Processor<?> pr = processors.get(key);
+      if (pr != null) {
+         @SuppressWarnings("unchecked")
+         Processor<T> processor = (Processor<T>) pr;
+         if (isForce) {
+            processor.setCallback(null);
+            processor = new Processor<T>(this, request, clazz, callback);
+            processors.put(key, processor);
+            processor.executeAsync();
+            Log.v(Const.AR_R + " Forced execute: " + request);
+         } else if (processor.isFinished()) {
+            processor.setCallback(callback);
+            processor.redelivery();
+            Log.v(Const.AR_R + " Redelivery data: " + request);
+         } else {
+            Log.v(Const.AR_R + " Still running: " + request);
+         }
+      } else {
+         Processor<T> processor = new Processor<T>(this, request, clazz, callback);
+         processors.put(key, processor);
+         processor.executeAsync();
+      }
+   }
+
+   private class ProcessorsCache extends LruCache<Integer, Processor<?>> {
+
+      /**
+       * @param maxSize
+       */
+      public ProcessorsCache(int maxSize) {
+         super(maxSize);
+      }
+
+   }
 }

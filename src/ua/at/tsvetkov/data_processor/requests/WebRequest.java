@@ -32,6 +32,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 
+import ua.at.tsvetkov.util.Log;
 import android.net.http.AndroidHttpClient;
 
 /**
@@ -56,8 +57,9 @@ public abstract class WebRequest extends Request {
 
    @Override
    public Request build() {
-      if (httpParameters == null)
+      if (httpParameters == null) {
          httpParameters = new BasicHttpParams();
+      }
       return super.build();
    }
 
@@ -88,11 +90,18 @@ public abstract class WebRequest extends Request {
    }
 
    protected InputStream getResponce(HttpUriRequest httpRequest) throws IOException {
-      HttpResponse responce;
-      if (httpContext == null)
-         responce = httpClient.execute(httpRequest);
-      else
-         responce = httpClient.execute(httpRequest, httpContext);
+      HttpResponse responce = null;
+      try {
+         if (httpContext == null) {
+            responce = httpClient.execute(httpRequest);
+         } else {
+            responce = httpClient.execute(httpRequest, httpContext);
+         }
+      } catch (IllegalStateException e) {
+         Log.e("Perhaps you are doing multiple requests on the same URL", e);
+         return null;
+      }
+
       statusCode = responce.getStatusLine().getStatusCode();
       return responce.getEntity().getContent();
    }
