@@ -1,7 +1,7 @@
 #Android Data Processor. Easy to build a REST request, to receive and processing data (XML, JSON, CSV and etc.)
 ===========================
 
-The Data Processor is designed to perform simple RESTservice requests or to files locally. Requests can run synchronously or asynchronously.
+The Data Processor is designed to perform simple RESTservice requests or to files locally. Requests can run synchronously or asynchronously. Used LruCache for store results and ThreadPool for async requests.
 
 ###Easy possibility of building requests and processing results.
 
@@ -82,7 +82,7 @@ For local file request (using FileRequest) process will be return FILE_SUCCESS o
 Request execution example:
 
 ```java
-DataProcessor.getInstance (). ExecuteAsync (request, LoginResult.class, callback);
+DataProcessor.getInstance ().ExecuteAsync (request, LoginResult.class, callback);
 ```
 
 Sample of processing callback:
