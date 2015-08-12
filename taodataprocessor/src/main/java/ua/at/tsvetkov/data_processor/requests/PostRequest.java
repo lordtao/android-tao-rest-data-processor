@@ -25,28 +25,25 @@ package ua.at.tsvetkov.data_processor.requests;
 
 import android.content.Context;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.List;
-
-import org.apache.http.Header;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HttpContext;
+import java.util.Map;
 
 import ua.at.tsvetkov.data_processor.helpers.Scheme;
 import ua.at.tsvetkov.util.Log;
 
-@SuppressWarnings("deprecation")
+
 public class PostRequest extends WebRequest {
 
-    private List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
-    private Header header;
+    private HashMap<String, String> requestProperties = new HashMap<String, String>();
 
     private PostRequest() {
 
@@ -69,20 +66,50 @@ public class PostRequest extends WebRequest {
         }
         startTime = System.currentTimeMillis();
 
-        HttpConnectionParams.setConnectionTimeout(httpParameters, configuration.getTimeout());
-        HttpConnectionParams.setSoTimeout(httpParameters, configuration.getTimeout());
+        httpURLConnection = (HttpURLConnection) getURL().openConnection();
+        httpURLConnection.setRequestMethod("POST");
+        httpURLConnection.setDoOutput(true);
+        httpURLConnection.setChunkedStreamingMode(0);
+        httpURLConnection.setReadTimeout(configuration.getTimeout());
+        httpURLConnection.setConnectTimeout(configuration.getTimeout());
 
-        HttpPost httpPost = new HttpPost(toString());
-        httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, encoding));
-        httpPost.setParams(httpParameters);
-        if (header != null) {
-            httpPost.addHeader(header);
-        }
+        OutputStream os = httpURLConnection.getOutputStream();
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+        writer.write(getPostDataString());
+
+        writer.flush();
+        writer.close();
 
         printToLogUrl();
         printToLogPairs();
 
-        return getResponce(httpPost);
+        return new BufferedInputStream(httpURLConnection.getInputStream());
+    }
+
+    private String getPostDataString() {
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+        for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            try {
+                result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+                result.append("=");
+                String value = entry.getValue();
+                if(value == null) {
+                    result.append(URLEncoder.encode("", "UTF-8"));
+                } else {
+                    result.append(URLEncoder.encode(value, "UTF-8"));
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result.toString();
     }
 
     /**
@@ -93,7 +120,67 @@ public class PostRequest extends WebRequest {
      * @return
      */
     public PostRequest addPostParam(String name, String value) {
-        nameValuePairs.add(new BasicNameValuePair(name, value));
+        requestProperties.put(name, value);
+        return this;
+    }
+
+    /**
+     * Added POST parameter
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    public PostRequest addPostParam(String name, int value) {
+        requestProperties.put(name, String.valueOf(value));
+        return this;
+    }
+
+    /**
+     * Added POST parameter
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    public PostRequest addPostParam(String name, float value) {
+        requestProperties.put(name, String.valueOf(value));
+        return this;
+    }
+
+    /**
+     * Added POST parameter
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    public PostRequest addPostParam(String name, double value) {
+        requestProperties.put(name, String.valueOf(value));
+        return this;
+    }
+
+    /**
+     * Added POST parameter
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    public PostRequest addPostParam(String name, long value) {
+        requestProperties.put(name, String.valueOf(value));
+        return this;
+    }
+
+    /**
+     * Added POST parameter
+     *
+     * @param name
+     * @param value
+     * @return
+     */
+    public PostRequest addPostParam(String name, boolean value) {
+        requestProperties.put(name, String.valueOf(value));
         return this;
     }
 
@@ -106,26 +193,6 @@ public class PostRequest extends WebRequest {
      */
     public PostRequest setUrl(String url) {
         this.url = url;
-        return this;
-    }
-
-    /**
-     * Set custom HttpParams.
-     *
-     * @return
-     */
-    public PostRequest setHttpParameters(HttpParams httpParameters) {
-        this.httpParameters = httpParameters;
-        return this;
-    }
-
-    /**
-     * Set custom HttpContext.
-     *
-     * @return
-     */
-    public PostRequest setHttpContext(HttpContext httpContext) {
-        this.httpContext = httpContext;
         return this;
     }
 
@@ -231,10 +298,6 @@ public class PostRequest extends WebRequest {
         return this;
     }
 
-    public PostRequest setHeader(Header header) {
-        this.header = header;
-        return this;
-    }
 
     /**
      * Add to query GET parameter.
@@ -352,9 +415,8 @@ public class PostRequest extends WebRequest {
 
     protected void printToLogPairs() {
         if (configuration.isLogEnabled()) {
-            for (int i = 0; i < nameValuePairs.size(); i++) {
-                BasicNameValuePair pair = nameValuePairs.get(i);
-                Log.v("ValuePair " + pair.getName() + " = " + pair.getValue());
+            for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
+                Log.v("ValuePair " + entry.getKey() + " = " + entry.getValue());
             }
         }
     }
@@ -367,7 +429,7 @@ public class PostRequest extends WebRequest {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((nameValuePairs == null) ? 0 : nameValuePairs.hashCode());
+        result = prime * result + ((requestProperties == null) ? 0 : requestProperties.hashCode());
         return result;
     }
 
@@ -387,11 +449,11 @@ public class PostRequest extends WebRequest {
             return false;
         }
         PostRequest other = (PostRequest) obj;
-        if (nameValuePairs == null) {
-            if (other.nameValuePairs != null) {
+        if (requestProperties == null) {
+            if (other.requestProperties != null) {
                 return false;
             }
-        } else if (!nameValuePairs.equals(other.nameValuePairs)) {
+        } else if (!requestProperties.equals(other.requestProperties)) {
             return false;
         }
         return true;

@@ -25,15 +25,11 @@ package ua.at.tsvetkov.data_processor.requests;
 
 import android.content.Context;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.util.HashMap;
-
-import org.apache.http.Header;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HttpContext;
 
 import ua.at.tsvetkov.data_processor.helpers.Scheme;
 
@@ -53,29 +49,21 @@ public class GetRequest extends WebRequest {
         return new GetRequest();
     }
 
-    @SuppressWarnings("deprecation")
-    private Header header;
-
     @Override
-    @SuppressWarnings("deprecation")
     public InputStream getInputStream() throws IOException {
         if (!isBuild()) {
             throw new IllegalArgumentException(REQUEST_IS_NOT_BUILDED);
         }
         startTime = System.currentTimeMillis();
 
-        HttpConnectionParams.setConnectionTimeout(httpParameters, configuration.getTimeout());
-        HttpConnectionParams.setSoTimeout(httpParameters, configuration.getTimeout());
-
-        HttpGet httpPost = new HttpGet(toString());
-        httpPost.setParams(httpParameters);
-        if (header != null) {
-            httpPost.addHeader(header);
-        }
+        httpURLConnection = (HttpURLConnection) getURL().openConnection();
+        httpURLConnection.setRequestMethod("GET");
+        httpURLConnection.setReadTimeout(configuration.getTimeout());
+        httpURLConnection.setConnectTimeout(configuration.getTimeout());
 
         printToLogUrl();
 
-        return getResponce(httpPost);
+        return new BufferedInputStream(httpURLConnection.getInputStream());
     }
 
     // ********************************************************************************
@@ -90,27 +78,6 @@ public class GetRequest extends WebRequest {
         return this;
     }
 
-    /**
-     * Set custom HttpParams.
-     *
-     * @return
-     */
-    @SuppressWarnings("deprecation")
-    public GetRequest setHttpParameters(HttpParams httpParameters) {
-        this.httpParameters = httpParameters;
-        return this;
-    }
-
-    /**
-     * Set custom HttpContext.
-     *
-     * @return
-     */
-    @SuppressWarnings("deprecation")
-    public GetRequest setHttpContext(HttpContext httpContext) {
-        this.httpContext = httpContext;
-        return this;
-    }
 
     /**
      * Set encoding
@@ -211,12 +178,6 @@ public class GetRequest extends WebRequest {
 
     public GetRequest setLogTag(String tag) {
         this.tag = tag;
-        return this;
-    }
-
-    @SuppressWarnings("deprecation")
-    public GetRequest setHeader(Header header) {
-        this.header = header;
         return this;
     }
 

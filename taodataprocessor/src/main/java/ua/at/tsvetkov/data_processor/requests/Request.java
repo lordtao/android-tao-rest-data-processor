@@ -30,6 +30,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -247,6 +249,14 @@ public abstract class Request {
         return statusCode;
     }
 
+    public URL getURL() {
+        try {
+            return new URL(toString());
+        } catch (MalformedURLException e) {
+            Log.e(WRONG_URL, e);
+            return null;
+        }
+    }
     /**
      * Return composed URL string from parts or null if not builded
      */

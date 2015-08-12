@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion '23.0.0'
 
     defaultConfig {
         minSdkVersion 8
-        targetSdkVersion 22
+        targetSdkVersion 23
     }
 
     buildTypes {
@@ -26,15 +26,13 @@ android {
 
 dependencies {
     compile project(':taocore')
-    compile 'com.android.support:support-v4:+'
-    compile 'org.apache.httpcomponents:httpcore:4.3.2'
-//    compile 'org.apache.httpcomponents:httpmime:4.3'
-
-    compile ('org.apache.httpcomponents:httpmime:4.3') {
+    compile 'com.android.support:support-v4:23.0.0'
+//    compile 'org.apache.httpcomponents:httpclient:4.5'
+//    compile 'org.apache.httpcomponents:httpcore:4.5'
+//    compile('org.apache.httpcomponents:httpmime:4.5') {
         // avoid "is ignored for the default configuration X" warnings
         // since httpclient is included in the android SDK.
-        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-    }
-
+//        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+//    }
     compile 'com.fasterxml.jackson.core:jackson-core:2.4.1'
 }

@@ -25,15 +25,11 @@ package ua.at.tsvetkov.data_processor.requests;
 
 import android.content.Context;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.util.HashMap;
-
-import org.apache.http.Header;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HttpContext;
 
 import ua.at.tsvetkov.data_processor.helpers.Scheme;
 
@@ -42,7 +38,6 @@ import ua.at.tsvetkov.data_processor.helpers.Scheme;
  * 
  * @author lordtao
  */
-@SuppressWarnings("deprecation")
 public class PutRequest extends WebRequest {
 
    /**
@@ -54,8 +49,6 @@ public class PutRequest extends WebRequest {
       return new PutRequest();
    }
 
-   private Header header;
-
    @Override
    public InputStream getInputStream() throws IOException {
       if (!isBuild()) {
@@ -63,18 +56,14 @@ public class PutRequest extends WebRequest {
       }
       startTime = System.currentTimeMillis();
 
-      HttpConnectionParams.setConnectionTimeout(httpParameters, configuration.getTimeout());
-      HttpConnectionParams.setSoTimeout(httpParameters, configuration.getTimeout());
-
-      HttpPut httpPost = new HttpPut(toString());
-      httpPost.setParams(httpParameters);
-      if (header != null) {
-         httpPost.addHeader(header);
-      }
+      httpURLConnection = (HttpURLConnection) getURL().openConnection();
+      httpURLConnection.setRequestMethod("PUT");
+      httpURLConnection.setReadTimeout(configuration.getTimeout());
+      httpURLConnection.setConnectTimeout(configuration.getTimeout());
 
       printToLogUrl();
 
-      return getResponce(httpPost);
+      return new BufferedInputStream(httpURLConnection.getInputStream());
    }
 
    // ********************************************************************************
@@ -86,26 +75,6 @@ public class PutRequest extends WebRequest {
     */
    public PutRequest setUrl(String url) {
       this.url = url;
-      return this;
-   }
-
-   /**
-    * Set custom HttpParams.
-    * 
-    * @return
-    */
-   public PutRequest setHttpParameters(HttpParams httpParameters) {
-      this.httpParameters = httpParameters;
-      return this;
-   }
-
-   /**
-    * Set custom HttpContext.
-    * 
-    * @return
-    */
-   public PutRequest setHttpContext(HttpContext httpContext) {
-      this.httpContext = httpContext;
       return this;
    }
 
@@ -208,11 +177,6 @@ public class PutRequest extends WebRequest {
 
    public PutRequest setLogTag(String tag) {
       this.tag = tag;
-      return this;
-   }
-
-   public PutRequest setHeader(Header header) {
-      this.header = header;
       return this;
    }
 
