@@ -74,6 +74,7 @@ public abstract class Request {
     protected boolean isRewriteFile;
     protected long startTime;
     protected int statusCode;
+    protected String statusMessage = "";
 
     protected boolean isNeedProgressDialog = false;
     protected Context context;
@@ -190,7 +191,7 @@ public abstract class Request {
      * Show standard ProgressDialog.
      */
     public void showProgressDialog() {
-        if(isNeedProgressDialog && progressDialog == null) {
+        if (isNeedProgressDialog && progressDialog == null) {
             progressDialog = ProgressDialog.show(context, progressDialogTitle, progressDialogMessage);
         }
     }
@@ -199,7 +200,7 @@ public abstract class Request {
      * Dismiss standard ProgressDialog.
      */
     public void dismissProgressDialog() {
-        if( progressDialog != null && progressDialog.isShowing()) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }
@@ -249,6 +250,14 @@ public abstract class Request {
         return statusCode;
     }
 
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    public void setStatusMessage(String message) {
+        statusMessage = message;
+    }
+
     public URL getURL() {
         try {
             return new URL(toString());
@@ -257,6 +266,7 @@ public abstract class Request {
             return null;
         }
     }
+
     /**
      * Return composed URL string from parts or null if not builded
      */

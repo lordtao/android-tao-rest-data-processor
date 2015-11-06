@@ -65,15 +65,17 @@ public final class DataProcessorConfiguration {
       isCacheEnabled = builder.isCacheEnabled;
       cacheSize = builder.cacheSize;
       if (isLogEnabled) {
-         Log.i("isLogEnabled = " + isLogEnabled);
-         Log.i("isShowProcessingTime = " + isShowProcessingTime);
+         Log.i("========= Data Processor Configuration ==========");
+         Log.i("Host = " + scheme + host + port);
+          Log.i("Test url = " + testServerUrl);
+          Log.i("isShowProcessingTime = " + isShowProcessingTime);
          if (isCacheEnabled) {
             Log.i("isCacheEnabled = true, cacheSize = " + cacheSize);
          } else {
             Log.i("isCacheEnabled = false");
          }
          Log.i("httpUserAgent = " + httpUserAgent);
-         Log.i("testServerUrl = " + testServerUrl);
+         Log.i("=================================================");
       }
    }
 

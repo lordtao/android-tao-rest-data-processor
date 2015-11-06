@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
+import java.util.Map;
 
 import ua.at.tsvetkov.data_processor.helpers.Scheme;
 
@@ -39,6 +40,8 @@ import ua.at.tsvetkov.data_processor.helpers.Scheme;
  * @author lordtao
  */
 public class GetRequest extends WebRequest {
+
+    private HashMap<String, String> requestProperties = new HashMap<String, String>();
 
     /**
      * Return new instance of GetRequest.
@@ -60,6 +63,7 @@ public class GetRequest extends WebRequest {
         httpURLConnection.setRequestMethod("GET");
         httpURLConnection.setReadTimeout(configuration.getTimeout());
         httpURLConnection.setConnectTimeout(configuration.getTimeout());
+        setRequestProperties();
 
         printToLogUrl();
 
@@ -68,6 +72,23 @@ public class GetRequest extends WebRequest {
 
     // ********************************************************************************
 
+    private void setRequestProperties() {
+        for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
+            httpURLConnection.setRequestProperty(entry.getKey(), entry.getValue());
+        }
+    }
+
+    /**
+     * Sets the value of the specified request header field. The value will only be used by the current URLConnection instance. This method can only be called before the connection is established.
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public GetRequest addRequestProperty(String key, String value) {
+        requestProperties.put(key, value);
+        return this;
+    }
     /**
      * Directly assign full URL string. All other URL methods will be ignored
      *

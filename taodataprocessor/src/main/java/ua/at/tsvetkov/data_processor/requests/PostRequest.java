@@ -43,6 +43,7 @@ import ua.at.tsvetkov.util.Log;
 
 public class PostRequest extends WebRequest {
 
+    private HashMap<String, String> postData = new HashMap<String, String>();
     private HashMap<String, String> requestProperties = new HashMap<String, String>();
 
     private PostRequest() {
@@ -66,16 +67,21 @@ public class PostRequest extends WebRequest {
         }
         startTime = System.currentTimeMillis();
 
+        String postDataString = getPostDataString();
+
         httpURLConnection = (HttpURLConnection) getURL().openConnection();
         httpURLConnection.setRequestMethod("POST");
+        httpURLConnection.setDoInput(true);
         httpURLConnection.setDoOutput(true);
         httpURLConnection.setChunkedStreamingMode(0);
         httpURLConnection.setReadTimeout(configuration.getTimeout());
         httpURLConnection.setConnectTimeout(configuration.getTimeout());
+        httpURLConnection.setRequestProperty("Content-Length", Integer.toString(postDataString.length()));
+        setRequestProperties();
 
         OutputStream os = httpURLConnection.getOutputStream();
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-        writer.write(getPostDataString());
+        writer.write(postDataString);
 
         writer.flush();
         writer.close();
@@ -86,10 +92,16 @@ public class PostRequest extends WebRequest {
         return new BufferedInputStream(httpURLConnection.getInputStream());
     }
 
+    private void setRequestProperties() {
+        for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
+            httpURLConnection.setRequestProperty(entry.getKey(), entry.getValue());
+        }
+    }
+
     private String getPostDataString() {
         StringBuilder result = new StringBuilder();
         boolean first = true;
-        for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
+        for (Map.Entry<String, String> entry : postData.entrySet()) {
             if (first)
                 first = false;
             else
@@ -99,7 +111,7 @@ public class PostRequest extends WebRequest {
                 result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
                 result.append("=");
                 String value = entry.getValue();
-                if(value == null) {
+                if (value == null) {
                     result.append(URLEncoder.encode("", "UTF-8"));
                 } else {
                     result.append(URLEncoder.encode(value, "UTF-8"));
@@ -113,6 +125,18 @@ public class PostRequest extends WebRequest {
     }
 
     /**
+     * Sets the value of the specified request header field. The value will only be used by the current URLConnection instance. This method can only be called before the connection is established.
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public PostRequest addRequestProperty(String key, String value) {
+        requestProperties.put(key, value);
+        return this;
+    }
+
+    /**
      * Added POST parameter
      *
      * @param name
@@ -120,7 +144,7 @@ public class PostRequest extends WebRequest {
      * @return
      */
     public PostRequest addPostParam(String name, String value) {
-        requestProperties.put(name, value);
+        postData.put(name, value);
         return this;
     }
 
@@ -132,7 +156,7 @@ public class PostRequest extends WebRequest {
      * @return
      */
     public PostRequest addPostParam(String name, int value) {
-        requestProperties.put(name, String.valueOf(value));
+        postData.put(name, String.valueOf(value));
         return this;
     }
 
@@ -144,7 +168,7 @@ public class PostRequest extends WebRequest {
      * @return
      */
     public PostRequest addPostParam(String name, float value) {
-        requestProperties.put(name, String.valueOf(value));
+        postData.put(name, String.valueOf(value));
         return this;
     }
 
@@ -156,7 +180,7 @@ public class PostRequest extends WebRequest {
      * @return
      */
     public PostRequest addPostParam(String name, double value) {
-        requestProperties.put(name, String.valueOf(value));
+        postData.put(name, String.valueOf(value));
         return this;
     }
 
@@ -168,7 +192,7 @@ public class PostRequest extends WebRequest {
      * @return
      */
     public PostRequest addPostParam(String name, long value) {
-        requestProperties.put(name, String.valueOf(value));
+        postData.put(name, String.valueOf(value));
         return this;
     }
 
@@ -180,7 +204,7 @@ public class PostRequest extends WebRequest {
      * @return
      */
     public PostRequest addPostParam(String name, boolean value) {
-        requestProperties.put(name, String.valueOf(value));
+        postData.put(name, String.valueOf(value));
         return this;
     }
 
@@ -415,8 +439,8 @@ public class PostRequest extends WebRequest {
 
     protected void printToLogPairs() {
         if (configuration.isLogEnabled()) {
-            for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
-                Log.v("ValuePair " + entry.getKey() + " = " + entry.getValue());
+            for (Map.Entry<String, String> entry : postData.entrySet()) {
+                Log.v(entry.getKey() + "=" + entry.getValue());
             }
         }
     }
@@ -429,7 +453,7 @@ public class PostRequest extends WebRequest {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((requestProperties == null) ? 0 : requestProperties.hashCode());
+        result = prime * result + ((postData == null) ? 0 : postData.hashCode());
         return result;
     }
 
@@ -449,11 +473,11 @@ public class PostRequest extends WebRequest {
             return false;
         }
         PostRequest other = (PostRequest) obj;
-        if (requestProperties == null) {
-            if (other.requestProperties != null) {
+        if (postData == null) {
+            if (other.postData != null) {
                 return false;
             }
-        } else if (!requestProperties.equals(other.requestProperties)) {
+        } else if (!postData.equals(other.postData)) {
             return false;
         }
         return true;

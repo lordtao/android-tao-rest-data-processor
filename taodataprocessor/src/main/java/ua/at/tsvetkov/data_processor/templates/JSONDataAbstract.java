@@ -4,6 +4,7 @@
 package ua.at.tsvetkov.data_processor.templates;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import ua.at.tsvetkov.data_processor.interfaces.StringDataInterface;
@@ -15,6 +16,10 @@ import ua.at.tsvetkov.util.Log;
 public abstract class JSONDataAbstract implements StringDataInterface {
 
     public static final int DEFAULT_INDENT_SPACE = 2;
+    private static final String JSON_DATA_FOR = "============ Received JSON for ";
+    private static final String DEVIDER_1 = " ============\n";
+    private static final String END_OF_JSON_DATA_FOR = "\n============ End of JSON for ";
+    private static final String SERVER_SENT_WRONG_DATA = "Server sent wrong data.";
 
     private static int indentSpaces = DEFAULT_INDENT_SPACE;
 
@@ -42,32 +47,34 @@ public abstract class JSONDataAbstract implements StringDataInterface {
 
     @Override
     public void fillFromString(String src) throws Exception {
-        setIndentSpaces(2);
+        setIndentSpaces(indentSpaces);
         if (src.startsWith("{")) {
             JSONObject jsonObject = null;
             try {
                 jsonObject = new JSONObject(src);
                 if (isShowObjectInLog) {
-                    Log.v(">\n============ JSON Data for " + getClass().getSimpleName() + " ============\n" + jsonObject.toString(indentSpaces) + "\n============ End of JSON data for " + getClass().getSimpleName() + " ============\n");
+                    Log.v(JSON_DATA_FOR + getClass().getSimpleName() + DEVIDER_1 + jsonObject.toString(indentSpaces) + END_OF_JSON_DATA_FOR + getClass().getSimpleName() + DEVIDER_1);
                 }
                 parse(jsonObject);
             } catch (Exception e) {
                 Log.e(this, src, e);
-                message = "Server sent wrong data.";
+                setMessage(SERVER_SENT_WRONG_DATA);
             }
-        }
-        if (src.startsWith("[")) {
+        } else if (src.startsWith("[")) {
             JSONArray jsonArray = null;
             try {
                 jsonArray = new JSONArray(src);
                 if (isShowObjectInLog) {
-                    Log.v(">\n============ JSON Data for " + getClass().getSimpleName() + " ============\n" + jsonArray.toString(indentSpaces) + "\n============ End of JSON data for " + getClass().getSimpleName() + " ============\n");
+                    Log.v(JSON_DATA_FOR + getClass().getSimpleName() + DEVIDER_1 + jsonArray.toString(indentSpaces) + END_OF_JSON_DATA_FOR + getClass().getSimpleName() + DEVIDER_1);
                 }
                 parse(jsonArray);
             } catch (Exception e) {
                 Log.e(this, src, e);
-                message = "Server sent wrong data.";
+                setMessage(SERVER_SENT_WRONG_DATA);
             }
+        } else {
+            setMessage(SERVER_SENT_WRONG_DATA);
+            Log.w("Not JSON string received: " + src);
         }
     }
 
@@ -141,12 +148,16 @@ public abstract class JSONDataAbstract implements StringDataInterface {
      * @return String
      */
     public String getString(JSONObject obj, String name) {
+        String result = null;
         try {
-            return obj.getString(name);
-        } catch (Exception e) {
+            result = obj.getString(name);
+        } catch (JSONException e) {
             Log.w(this, name + " is not exist in this JSON object");
-            return "";
         }
+        if (result == null || result.equals("null")) {
+            result = "";
+        }
+        return result;
     }
 
     /**
@@ -158,12 +169,13 @@ public abstract class JSONDataAbstract implements StringDataInterface {
      * @return boolean
      */
     public boolean getBoolean(JSONObject obj, String name) {
+        boolean result = false;
         try {
-            return obj.getBoolean(name);
-        } catch (Exception e) {
+            result = obj.getBoolean(name);
+        } catch (JSONException e) {
             Log.w(this, name + " is not exist in this JSON object");
-            return false;
         }
+        return result;
     }
 
     /**
@@ -175,12 +187,13 @@ public abstract class JSONDataAbstract implements StringDataInterface {
      * @return integer
      */
     public int getInt(JSONObject obj, String name) {
+        int result = 0;
         try {
-            return obj.getInt(name);
-        } catch (Exception e) {
+            result = obj.getInt(name);
+        } catch (JSONException e) {
             Log.w(this, name + " is not exist in this JSON object");
-            return 0;
         }
+        return result;
     }
 
     /**
@@ -192,12 +205,13 @@ public abstract class JSONDataAbstract implements StringDataInterface {
      * @return long
      */
     public long getLong(JSONObject obj, String name) {
+        long result = 0;
         try {
-            return obj.getLong(name);
-        } catch (Exception e) {
+            result = obj.getLong(name);
+        } catch (JSONException e) {
             Log.w(this, name + " is not exist in this JSON object");
-            return 0;
         }
+        return result;
     }
 
     /**
@@ -209,12 +223,13 @@ public abstract class JSONDataAbstract implements StringDataInterface {
      * @return double
      */
     public double getDouble(JSONObject obj, String name) {
+        double result = 0;
         try {
-            return obj.getDouble(name);
-        } catch (Exception e) {
+            result = obj.getDouble(name);
+        } catch (JSONException e) {
             Log.w(this, name + " is not exist in this JSON object");
-            return 0;
         }
+        return result;
     }
 
     /**
@@ -226,12 +241,13 @@ public abstract class JSONDataAbstract implements StringDataInterface {
      * @return JSONObject
      */
     public JSONObject getJSONObject(JSONObject obj, String name) {
+        JSONObject result = null;
         try {
-            return obj.getJSONObject(name);
-        } catch (Exception e) {
+            result = obj.getJSONObject(name);
+        } catch (JSONException e) {
             Log.w(this, name + " is not exist in this JSON object");
-            return null;
         }
+        return result;
     }
 
     /**
@@ -243,11 +259,12 @@ public abstract class JSONDataAbstract implements StringDataInterface {
      * @return JSONArray
      */
     public JSONArray getJSONArray(JSONObject obj, String name) {
+        JSONArray result = null;
         try {
-            return obj.getJSONArray(name);
-        } catch (Exception e) {
+            result = obj.getJSONArray(name);
+        } catch (JSONException e) {
             Log.w(this, name + " is not exist in this JSON object");
-            return null;
         }
+        return result;
     }
 }

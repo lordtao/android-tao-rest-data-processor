@@ -75,8 +75,21 @@ public abstract class WebRequest extends Request {
             statusCode = httpURLConnection.getResponseCode();
         } catch (IOException e) {
             Log.e("IO error during the retrieval response code.", e);
+            statusCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
         }
         return statusCode;
+    }
+
+    @Override
+    public String getStatusMessage() {
+        String message = "";
+        try {
+            message = httpURLConnection.getResponseMessage();
+        } catch (IOException e) {
+            Log.e("IO error during the retrieval response message.", e);
+            message = "Server is not reachable.";
+        }
+        return message;
     }
 
 }

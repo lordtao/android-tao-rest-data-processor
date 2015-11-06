@@ -149,22 +149,21 @@ public class Processor<T> {
                     processor.parse(inputStream);
                 } catch (Exception e) {
                     Log.e("Parsing Error for " + clazz + " in request " + request.toString(), e);
-//               sendMessage(ERROR, null);
                 }
-                sendMessage(request.getStatusCode(), processor.getResult());
+                sendMessage(request.getStatusCode(), processor.getResult(), request.getStatusMessage());
             } else {
-                sendMessage(request.getStatusCode(), null);
+                sendMessage(request.getStatusCode(), null, request.getStatusMessage());
                 // sendMessage(request.getStatusCode(), inputStream); WTF???
             }
         } catch (SocketTimeoutException e) {
-            Log.e("Timeout for " + clazz.getSimpleName() + " in request " + request.toString(), e);
-            sendMessage(ERROR, null);
+            Log.e("Timeout during creation " + clazz.getSimpleName() + " in request " + request.toString(), e);
+            sendMessage(request.getStatusCode(), null, request.getStatusMessage());
         } catch (FileNotFoundException e) {
-            Log.e("Bad url for " + clazz.getSimpleName() + " in request " + request.toString(), e);
-            sendMessage(ERROR, null);
+            Log.e("Path is not found during creation " + clazz.getSimpleName() + " in request " + request.toString(), e);
+            sendMessage(request.getStatusCode(), null, request.getStatusMessage());
         } catch (IOException e) {
-            Log.e("IOException for " + clazz.getSimpleName() + " in request " + request.toString(), e);
-            sendMessage(ERROR, null);
+            Log.e("IOException during creation " + clazz.getSimpleName() + " in request " + request.toString(), e);
+            sendMessage(request.getStatusCode(), null, request.getStatusMessage());
         } finally {
             try {
                 if (inputStream != null) {
@@ -225,22 +224,31 @@ public class Processor<T> {
         }
     }
 
-    private void sendMessage(final int statusCode, final T object) {
+    private void sendMessage(final int statusCode, final T object, final String errMessage) {
         setResult(object);
         setStatus(statusCode);
+        setStatusMessage(errMessage);
         if (callback != null) {
             if (thread == Thread.currentThread()) {
-                callback.onFinish(object, statusCode);
+                callback.onFinish(object, statusCode, errMessage);
             } else {
                 handler.post(new Runnable() {
 
                     @Override
                     public void run() {
-                        callback.onFinish(object, statusCode);
+                        callback.onFinish(object, statusCode, errMessage);
                     }
                 });
             }
         }
+    }
+
+    private void setStatusMessage(String message) {
+        request.setStatusMessage(message);
+    }
+
+    private String getStatusMessage() {
+        return request.getStatusMessage();
     }
 
     public void executeAsync() {
@@ -322,7 +330,7 @@ public class Processor<T> {
      * Redelivery result in callback
      */
     public void redelivery() {
-        sendMessage(statusCode, result);
+        sendMessage(statusCode, result, getStatusMessage());
     }
 
     private T setResult(T result) {
@@ -341,13 +349,12 @@ public class Processor<T> {
 
         /**
          * Return resulted object which implemented {@link InputStreamDataInterface} or {@link StringDataInterface}.
-         *
-         * @param obj created object or null
+         *  @param obj created object or null
          * @param statusCode status of request execution. <br>
          *           For http request - HTTP Status Code see {@link HttpURLConnection} constant.<br>
-         *           For file request return FILE_SUCCESS or ERROR
+         * @param errMessage result message
          */
-        public abstract void onFinish(T obj, int statusCode);
+        public abstract void onFinish(T obj, int statusCode, String errMessage);
 
     }
 
