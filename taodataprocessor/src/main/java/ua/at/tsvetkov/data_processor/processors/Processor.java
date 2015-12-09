@@ -96,7 +96,7 @@ public class Processor<T> {
         this.clazz = clazz;
         this.callback = null;
 
-        if (Looper.myLooper() != null) {
+        if (Looper.myLooper() != null) {// getMainLooper ?
             handler = new Handler();
         } else {
             handler = null;

@@ -4,15 +4,15 @@
  * are made available under the terms of the GNU Lesser General Public License
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/lgpl.html
- * <p/>
+ * <p>
  * Contributors:
  * Alexandr Tsvetkov - initial API and implementation
- * <p/>
+ * <p>
  * Project:
  * TAO Data Processor
- * <p/>
+ * <p>
  * License agreement:
- * <p/>
+ * <p>
  * 1. This code is published AS IS. Author is not responsible for any damage that can be
  * caused by any application that uses this code.
  * 2. Author does not give a garantee, that this code is error free.
@@ -23,12 +23,8 @@
  ******************************************************************************/
 package ua.at.tsvetkov.data_processor;
 
-//import ua.at.tsvetkov.data_processor.interfaces.InputStreamDataInterface;
-//import ua.at.tsvetkov.data_processor.interfaces.StringDataInterface;
-
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.os.Looper;
+import android.support.annotation.UiThread;
 import android.support.v4.util.LruCache;
 
 import java.util.List;
@@ -37,10 +33,6 @@ import ua.at.tsvetkov.data_processor.processors.Processor;
 import ua.at.tsvetkov.data_processor.processors.Processor.Callback;
 import ua.at.tsvetkov.data_processor.requests.Request;
 import ua.at.tsvetkov.data_processor.threads.DataProcessorThreadPool;
-import ua.at.tsvetkov.netchecker.Net;
-import ua.at.tsvetkov.netchecker.NetChecker;
-import ua.at.tsvetkov.netchecker.NetStatus;
-import ua.at.tsvetkov.netchecker.NetStatusCallback;
 import ua.at.tsvetkov.util.Const;
 import ua.at.tsvetkov.util.Log;
 
@@ -102,34 +94,6 @@ public class DataProcessor {
         }
     }
 
-    public synchronized void checkSiteStatus(final Activity activity, String progressDialogTitle, String progressDialogMessage, final NetStatusCallback callback) {
-        checkConfiguration();
-        final ProgressDialog progressDialog = ProgressDialog.show(activity, progressDialogTitle, progressDialogMessage);
-        NetChecker.setTimeout(configuration.getTimeout());
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                final NetStatus netStatus = NetChecker.checkNet(activity, configuration.getTestServerUrl());
-                activity.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        callback.onResume(netStatus);
-                        progressDialog.dismiss();
-                    }
-
-                });
-            }
-
-        }).start();
-    }
-
-    public synchronized boolean isSiteAccessible(Activity activity) {
-        checkConfiguration();
-        return Net.isAccessible(activity, configuration.getTestServerUrl(), configuration.getTimeout());
-    }
-
     public DataProcessorThreadPool getThreadPool() {
         return threadPool;
     }
@@ -176,6 +140,7 @@ public class DataProcessor {
      * @param request
      * @param clazz
      */
+    @UiThread
     public synchronized <T> void executeAsync(Request request, Class<T> clazz) {
         checkConfiguration();
         new Processor<T>(this, request, clazz, null).executeAsync();
@@ -189,6 +154,7 @@ public class DataProcessor {
      * @param clazz
      * @param callback
      */
+    @UiThread
     public synchronized <T> void executeAsync(Request request, Class<T> clazz, Callback<T> callback) {
         checkConfiguration();
         new Processor<T>(this, request, clazz, callback).executeAsync();
@@ -204,6 +170,7 @@ public class DataProcessor {
      * @param clazz
      * @param callback
      */
+    @UiThread
     public synchronized <T> void executeCachedAsync(int key, Request request, Class<T> clazz, Callback<T> callback) {
         executeCachedAsync(key, request, clazz, callback, false);
     }
@@ -218,6 +185,7 @@ public class DataProcessor {
      * @param clazz
      * @param callback
      */
+    @UiThread
     public synchronized <T> void executeCachedAsyncForce(int key, Request request, Class<T> clazz, Callback<T> callback) {
         executeCachedAsync(key, request, clazz, callback, true);
     }
@@ -233,6 +201,7 @@ public class DataProcessor {
      * @param callback
      * @param isForce
      */
+    @UiThread
     public synchronized <T> void executeCachedAsync(int key, Request request, Class<T> clazz, Callback<T> callback, boolean isForce) {
         if (Looper.getMainLooper().getThread() != Thread.currentThread()) {
             throw new IllegalStateException("Must be executed from UI thread.");
