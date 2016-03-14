@@ -39,7 +39,6 @@ import java.util.Map.Entry;
 import ua.at.tsvetkov.data_processor.DataProcessor;
 import ua.at.tsvetkov.data_processor.DataProcessorConfiguration;
 import ua.at.tsvetkov.data_processor.helpers.Scheme;
-import ua.at.tsvetkov.util.Const;
 import ua.at.tsvetkov.util.Log;
 
 /**
@@ -56,6 +55,7 @@ public abstract class Request {
     private static final String PASSWORD_IS_NOT_SPECIFIED = "Username is available in the request, but the password is not specified";
     protected static final String CONFIGURATION_ERROR = "DataProcessor configuration is not initialized.";
     protected static final String REQUEST_IS_NOT_BUILDED = "Request is not builded";
+    private static final String AR_R = "\u2192";
 
     protected DataProcessorConfiguration configuration = DataProcessor.getInstance().getConfiguration();
     protected HashMap<String, String> queries;
@@ -435,9 +435,9 @@ public abstract class Request {
     protected void printToLogUrl() {
         if (configuration.isLogEnabled()) {
             if (tag == null) {
-                Log.v(Const.AR_R + CALL_URL + toString());
+                Log.v(AR_R + CALL_URL + toString());
             } else {
-                Log.v(Const.AR_R + " " + tag + " : " + toString());
+                Log.v(AR_R + " " + tag + " : " + toString());
             }
         }
     }

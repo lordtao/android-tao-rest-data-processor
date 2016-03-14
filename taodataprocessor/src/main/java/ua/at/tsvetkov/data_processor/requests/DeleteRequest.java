@@ -177,6 +177,7 @@ public class DeleteRequest extends WebRequest {
 
     /**
      * Tag for LogCat
+     *
      * @param tag string
      * @return this request
      */
@@ -188,7 +189,7 @@ public class DeleteRequest extends WebRequest {
     /**
      * Add to query GET parameter.
      *
-     * @param key string
+     * @param key   string
      * @param value string
      * @return this request
      */
@@ -202,7 +203,7 @@ public class DeleteRequest extends WebRequest {
     /**
      * Add to query GET parameter.
      *
-     * @param key string
+     * @param key   string
      * @param value string
      * @return this request
      */
@@ -216,7 +217,7 @@ public class DeleteRequest extends WebRequest {
     /**
      * Add to query GET parameter.
      *
-     * @param key string
+     * @param key   string
      * @param value string
      * @return this request
      */
@@ -230,7 +231,7 @@ public class DeleteRequest extends WebRequest {
     /**
      * Add to query GET parameter.
      *
-     * @param key string
+     * @param key   string
      * @param value string
      * @return this request
      */
@@ -244,7 +245,7 @@ public class DeleteRequest extends WebRequest {
     /**
      * Add to query GET parameter.
      *
-     * @param key string
+     * @param key   string
      * @param value string
      * @return this request
      */

@@ -3,6 +3,9 @@
 
 The Data Processor is designed to perform simple RESTservice requests or to files locally. Requests can run synchronously or asynchronously. Used LruCache for store results and ThreadPool for async requests.
 
+Download from Bintray: [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-rest-data-processor/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-rest-data-processor/_latestVersion)
+
+
 ###Easy possibility of building requests and processing results.
 
 Initialize the Data Processor
@@ -91,3 +94,37 @@ return new DataProcessor.Callback<LoginResult>() {
 ```
 
 Example project you can find at https://github.com/lordtao/android-tao-data-processor-example
+
+Add android-tao-core to your project
+----------------------------
+Android Data Processor is available on Bintray. Please ensure that you are using the latest versions by [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-rest-data-processor/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-rest-data-processor/_latestVersion)
+
+Gradle dependency for your Android app:
+
+add to general build.gradle
+```
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url  "http://dl.bintray.com/lordtao/maven"
+        }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.0.0-alpha8'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        maven {
+            url  "http://dl.bintray.com/lordtao/maven"
+        }
+    }
+}
+```
+add to your module build.gradle
+```
+    compile 'ua.at.tsvetkov:taodataprocessor:1.2.1'
+```

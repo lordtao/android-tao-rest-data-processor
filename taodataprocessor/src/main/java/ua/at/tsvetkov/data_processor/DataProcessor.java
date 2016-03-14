@@ -4,15 +4,15 @@
  * are made available under the terms of the GNU Lesser General Public License
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/lgpl.html
- * <p>
+ * <p/>
  * Contributors:
  * Alexandr Tsvetkov - initial API and implementation
- * <p>
+ * <p/>
  * Project:
  * TAO Data Processor
- * <p>
+ * <p/>
  * License agreement:
- * <p>
+ * <p/>
  * 1. This code is published AS IS. Author is not responsible for any damage that can be
  * caused by any application that uses this code.
  * 2. Author does not give a garantee, that this code is error free.
@@ -24,7 +24,6 @@
 package ua.at.tsvetkov.data_processor;
 
 import android.os.Looper;
-import android.support.annotation.UiThread;
 import android.support.v4.util.LruCache;
 
 import java.util.List;
@@ -33,7 +32,6 @@ import ua.at.tsvetkov.data_processor.processors.Processor;
 import ua.at.tsvetkov.data_processor.processors.Processor.Callback;
 import ua.at.tsvetkov.data_processor.requests.Request;
 import ua.at.tsvetkov.data_processor.threads.DataProcessorThreadPool;
-import ua.at.tsvetkov.util.Const;
 import ua.at.tsvetkov.util.Log;
 
 /**
@@ -45,6 +43,7 @@ public class DataProcessor {
     private static final String ERROR_INIT_CONFIG_WITH_NULL = "DataProcessor configuration can not be initialized with null.";
     private static final String LOG_INIT_CONFIG = "Initialize DataProcessor with configuration.";
     private static final String WARNING_RE_INIT_CONFIG = "Try to initialize DataProcessor which had already been initialized before.";
+    private static final String AR_R = "\u2192";
 
     private static DataProcessor instance;
 
@@ -140,7 +139,7 @@ public class DataProcessor {
      * @param request
      * @param clazz
      */
-    @UiThread
+
     public synchronized <T> void executeAsync(Request request, Class<T> clazz) {
         checkConfiguration();
         new Processor<T>(this, request, clazz, null).executeAsync();
@@ -154,7 +153,7 @@ public class DataProcessor {
      * @param clazz
      * @param callback
      */
-    @UiThread
+
     public synchronized <T> void executeAsync(Request request, Class<T> clazz, Callback<T> callback) {
         checkConfiguration();
         new Processor<T>(this, request, clazz, callback).executeAsync();
@@ -170,7 +169,7 @@ public class DataProcessor {
      * @param clazz
      * @param callback
      */
-    @UiThread
+
     public synchronized <T> void executeCachedAsync(int key, Request request, Class<T> clazz, Callback<T> callback) {
         executeCachedAsync(key, request, clazz, callback, false);
     }
@@ -185,7 +184,7 @@ public class DataProcessor {
      * @param clazz
      * @param callback
      */
-    @UiThread
+
     public synchronized <T> void executeCachedAsyncForce(int key, Request request, Class<T> clazz, Callback<T> callback) {
         executeCachedAsync(key, request, clazz, callback, true);
     }
@@ -201,7 +200,7 @@ public class DataProcessor {
      * @param callback
      * @param isForce
      */
-    @UiThread
+
     public synchronized <T> void executeCachedAsync(int key, Request request, Class<T> clazz, Callback<T> callback, boolean isForce) {
         if (Looper.getMainLooper().getThread() != Thread.currentThread()) {
             throw new IllegalStateException("Must be executed from UI thread.");
@@ -222,13 +221,13 @@ public class DataProcessor {
                 processor = new Processor<T>(this, request, clazz, callback);
                 processors.put(key, processor);
                 processor.executeAsync();
-                Log.v(Const.AR_R + " Forced execute: " + request);
+                Log.v(AR_R + " Forced execute: " + request);
             } else if (processor.isFinished()) {
                 processor.setCallback(callback);
                 processor.redelivery();
-                Log.v(Const.AR_R + " Redelivery data: " + request);
+                Log.v(AR_R + " Redelivery data: " + request);
             } else {
-                Log.v(Const.AR_R + " Still running: " + request);
+                Log.v(AR_R + " Still running: " + request);
             }
         } else {
             Processor<T> processor = new Processor<T>(this, request, clazz, callback);

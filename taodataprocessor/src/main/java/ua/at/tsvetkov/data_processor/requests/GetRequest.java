@@ -89,6 +89,7 @@ public class GetRequest extends WebRequest {
         requestProperties.put(key, value);
         return this;
     }
+
     /**
      * Directly assign full URL string. All other URL methods will be ignored
      *

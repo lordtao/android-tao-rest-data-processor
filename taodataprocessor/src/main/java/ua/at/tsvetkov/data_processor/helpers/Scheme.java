@@ -4,46 +4,46 @@
  * are made available under the terms of the GNU Lesser General Public License
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/lgpl.html
- *
+ * <p/>
  * Contributors:
- *     Alexandr Tsvetkov - initial API and implementation
- *
+ * Alexandr Tsvetkov - initial API and implementation
+ * <p/>
  * Project:
- *     TAO Data Processor
- *
+ * TAO Data Processor
+ * <p/>
  * License agreement:
- *
+ * <p/>
  * 1. This code is published AS IS. Author is not responsible for any damage that can be
- *    caused by any application that uses this code.
+ * caused by any application that uses this code.
  * 2. Author does not give a garantee, that this code is error free.
  * 3. This code can be used in NON-COMMERCIAL applications AS IS without any special
- *    permission from author.
+ * permission from author.
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
- *    this license agreement will remain unchanged.
+ * this license agreement will remain unchanged.
  ******************************************************************************/
 package ua.at.tsvetkov.data_processor.helpers;
 
 /**
  * Protocol for URL like "http" or "file". This is also known as the scheme. The returned string is lower case.
- * 
+ *
  * @author lordtao
  */
 public enum Scheme {
-   HTTP("http://"), HTTPS("https://"), FILE("file://"), ASSETS("");
+    HTTP("http://"), HTTPS("https://"), FILE("file://"), ASSETS("");
 
-   private String mType;
+    private String mType;
 
-   private Scheme(String type) {
-      this.mType = type;
-   }
+    Scheme(String type) {
+        this.mType = type;
+    }
 
-   /**
-    * Returns the protocol for URL like "http://" or "file://". This is also known as the scheme. The returned string is lower case.
-    * 
-    * @return
-    */
-   @Override
-   public String toString() {
-      return mType;
-   }
+    /**
+     * Returns the protocol for URL like "http://" or "file://". This is also known as the scheme. The returned string is lower case.
+     *
+     * @return
+     */
+    @Override
+    public String toString() {
+        return mType;
+    }
 }
