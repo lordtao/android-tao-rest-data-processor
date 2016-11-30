@@ -44,7 +44,6 @@ import ua.at.tsvetkov.data_processor.processors.abstractclasses.AbstractProcesso
 import ua.at.tsvetkov.data_processor.requests.Request;
 import ua.at.tsvetkov.data_processor.threads.DataProcessingThreadFactory;
 import ua.at.tsvetkov.data_processor.threads.DataProcessorThreadPool;
-import ua.at.tsvetkov.util.Const;
 import ua.at.tsvetkov.util.Log;
 
 @SuppressWarnings("deprecation")
@@ -139,7 +138,7 @@ public class Processor<T> {
          } else {
             inputStream = request.getInputStream();
          }
-         if (request.getStatusCode() == FILE_SUCCESS || request.getStatusCode() == HttpURLConnection.HTTP_OK) {
+         if (request.getStatusCode() == FILE_SUCCESS || inputStream != null) {
             createProcessor();
          } else {
             Log.e("Request " + request.toString() + " status:" + request.getStatusCode());
@@ -176,7 +175,7 @@ public class Processor<T> {
       }
       if (DataProcessor.getInstance().getConfiguration().isLogEnabled() && DataProcessor.getInstance().getConfiguration().isShowProcessingTime()) {
          long time = System.currentTimeMillis() - request.getStartTime();
-         Log.v(LOADING_TIME + time + MS + request + END_STRING);
+         Log.v(LOADING_TIME + time + MS + request + END_STRING + " status:" + request.getStatusCode());
       }
       request.dismissProgressDialog();
       if (processor != null) {
