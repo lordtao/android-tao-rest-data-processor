@@ -4,7 +4,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 
 def versionMajor = 1
 def versionMinor = 2
-def versionPatch = 2
+def versionPatch = 3
 
 version = "${versionMajor}.${versionMinor}.${versionPatch}"
 group = "ua.at.tsvetkov"
@@ -15,12 +15,12 @@ def siteUrl = 'https://github.com/${gitUser}/${gitProject}'
 def gitUrl = 'https://github.com/${gitUser}/${gitProject}.git'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.1'
 
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 23
+        minSdkVersion 9
+        targetSdkVersion 25
         versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName version
     }
@@ -42,11 +42,16 @@ android {
 
 dependencies {
     compile 'ua.at.tsvetkov:taocore:1.2.15'
-    compile 'com.android.support:support-v4:23.1.1'
+    compile 'com.android.support:support-v4:25.0.1'
     compile 'com.fasterxml.jackson.core:jackson-core:2.4.1'
 }
 
-// Hide properties from ext users
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}
+
+
+//// Hide properties from ext users
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
@@ -94,26 +99,26 @@ install {
     }
 }
 
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-
-task findConventions << {
-    println project.getConvention()
-}
+//task sourcesJar(type: Jar) {
+//    from android.sourceSets.main.java.srcDirs
+//    classifier = 'sources'
+//}
+//
+//task javadoc(type: Javadoc) {
+//    source = android.sourceSets.main.java.srcDirs
+//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+//}
+//
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//    classifier = 'javadoc'
+//    from javadoc.destinationDir
+//}
+//
+//artifacts {
+//    archives javadocJar
+//    archives sourcesJar
+//}
+//
+//task findConventions << {
+//    println project.getConvention()
+//}

@@ -1,5 +1,1 @@
 include ':taodataprocessor'
-//def taoCoreDir = file('../android-tao-core/taocore')
-//def rootProjectDescriptor = settings.rootProject
-//settings.createProjectDescriptor(rootProjectDescriptor, 'taocore', taoCoreDir)
-//include ':taocore'

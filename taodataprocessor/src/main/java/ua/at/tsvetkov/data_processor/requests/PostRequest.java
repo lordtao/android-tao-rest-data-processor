@@ -89,7 +89,11 @@ public class PostRequest extends WebRequest {
         printToLogUrl();
         printToLogPairs();
 
-        return new BufferedInputStream(httpURLConnection.getInputStream());
+        InputStream stream = httpURLConnection.getInputStream();
+        if(stream==null) {
+            stream = httpURLConnection.getErrorStream();
+        }
+        return new BufferedInputStream(stream);
     }
 
     private void setRequestProperties() {
