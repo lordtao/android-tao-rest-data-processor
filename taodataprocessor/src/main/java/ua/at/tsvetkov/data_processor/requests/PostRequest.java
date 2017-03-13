@@ -45,6 +45,7 @@ public class PostRequest extends WebRequest {
 
    private HashMap<String, String> postData = new HashMap<String, String>();
    private HashMap<String, String> requestProperties = new HashMap<String, String>();
+   private String body;
 
    private PostRequest() {
 
@@ -105,6 +106,9 @@ public class PostRequest extends WebRequest {
    }
 
    private String getPostDataString() {
+      if (body != null) {
+         return body;
+      }
       StringBuilder result = new StringBuilder();
       boolean first = true;
       for (Map.Entry<String, String> entry : postData.entrySet()) {
@@ -401,6 +405,11 @@ public class PostRequest extends WebRequest {
          queries = new HashMap<String, String>();
       }
       queries.put(key, String.valueOf(value));
+      return this;
+   }
+
+   public PostRequest addBody(String body) {
+      this.body = body;
       return this;
    }
 

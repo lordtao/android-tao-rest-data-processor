@@ -4,7 +4,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 
 def versionMajor = 1
 def versionMinor = 2
-def versionPatch = 7
+def versionPatch = 8
 
 version = "${versionMajor}.${versionMinor}.${versionPatch}"
 group = "ua.at.tsvetkov"
@@ -16,7 +16,7 @@ def gitUrl = 'https://github.com/${gitUser}/${gitProject}.git'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.1'
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         minSdkVersion 9
@@ -42,7 +42,7 @@ android {
 
 dependencies {
     compile 'ua.at.tsvetkov:taocore:1.2.15'
-    compile 'com.android.support:support-v4:25.0.1'
+    compile 'com.android.support:support-v4:25.2.0'
     compile 'com.fasterxml.jackson.core:jackson-core:2.4.1'
 }
 
@@ -98,27 +98,3 @@ install {
         }
     }
 }
-
-//task sourcesJar(type: Jar) {
-//    from android.sourceSets.main.java.srcDirs
-//    classifier = 'sources'
-//}
-//
-//task javadoc(type: Javadoc) {
-//    source = android.sourceSets.main.java.srcDirs
-//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-//}
-//
-//task javadocJar(type: Jar, dependsOn: javadoc) {
-//    classifier = 'javadoc'
-//    from javadoc.destinationDir
-//}
-//
-//artifacts {
-//    archives javadocJar
-//    archives sourcesJar
-//}
-//
-//task findConventions << {
-//    println project.getConvention()
-//}
