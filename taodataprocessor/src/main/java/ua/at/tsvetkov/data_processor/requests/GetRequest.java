@@ -67,10 +67,8 @@ public class GetRequest extends WebRequest {
 
         printToLogUrl();
 
-        InputStream stream;
-        try {
-            stream  = httpURLConnection.getInputStream();
-        } catch (Exception e) {
+        InputStream stream = httpURLConnection.getInputStream();
+        if(stream==null) {
             stream = httpURLConnection.getErrorStream();
         }
         return new BufferedInputStream(stream);
