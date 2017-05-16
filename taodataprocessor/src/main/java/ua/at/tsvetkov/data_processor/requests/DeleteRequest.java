@@ -62,11 +62,7 @@ public class DeleteRequest extends WebRequest {
 
         printToLogUrl();
 
-        InputStream stream = httpURLConnection.getInputStream();
-        if(stream==null) {
-            stream = httpURLConnection.getErrorStream();
-        }
-        return new BufferedInputStream(stream);
+        return getStream();
     }
 
     // ********************************************************************************

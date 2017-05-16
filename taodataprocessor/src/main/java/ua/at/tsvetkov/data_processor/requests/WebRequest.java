@@ -23,6 +23,7 @@
  ******************************************************************************/
 package ua.at.tsvetkov.data_processor.requests;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -38,59 +39,72 @@ import ua.at.tsvetkov.util.Log;
  */
 public abstract class WebRequest extends Request {
 
-    protected HttpURLConnection httpURLConnection;
+   protected HttpURLConnection httpURLConnection;
 
-    public WebRequest() {
+   public WebRequest() {
 
-    }
+   }
 
-    @Override
-    public abstract InputStream getInputStream() throws IOException;
+   protected BufferedInputStream getStream() {
+      InputStream stream = null;
+      try {
+         stream = httpURLConnection.getInputStream();
+      } catch (Exception e) {
+         Log.w("Using ErrorStream data");
+      }
+      if (stream == null) {
+         stream = httpURLConnection.getErrorStream();
+      }
+      return new BufferedInputStream(stream);
+   }
 
-    @Override
-    public Request build() {
-        return super.build();
-    }
+   @Override
+   public abstract InputStream getInputStream() throws IOException;
 
-    /**
-     * Release resources associated with this request. You must call this, or significant resources (sockets and memory) may be leaked.
-     */
-    @Override
-    public void close() throws Exception {
-        httpURLConnection.disconnect();
-    }
+   @Override
+   public Request build() {
+      return super.build();
+   }
+
+   /**
+    * Release resources associated with this request. You must call this, or significant resources (sockets and memory) may be leaked.
+    */
+   @Override
+   public void close() throws Exception {
+      httpURLConnection.disconnect();
+   }
 
 
-    /**
-     * TODO
-     *
-     * @return
-     */
-    public HttpURLConnection getHttpURLConnection() {
-        return httpURLConnection;
-    }
+   /**
+    * TODO
+    *
+    * @return
+    */
+   public HttpURLConnection getHttpURLConnection() {
+      return httpURLConnection;
+   }
 
-    @Override
-    public int getStatusCode() {
-        try {
-            statusCode = httpURLConnection.getResponseCode();
-        } catch (IOException e) {
-            Log.e("IO error during the retrieval response code.", e);
-            statusCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
-        }
-        return statusCode;
-    }
+   @Override
+   public int getStatusCode() {
+      try {
+         statusCode = httpURLConnection.getResponseCode();
+      } catch (IOException e) {
+         Log.e("IO error during the retrieval response code.", e);
+         statusCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
+      }
+      return statusCode;
+   }
 
-    @Override
-    public String getStatusMessage() {
-        String message = "";
-        try {
-            message = httpURLConnection.getResponseMessage();
-        } catch (IOException e) {
-            Log.e("IO error during the retrieval response message.", e);
-            message = "Server is not reachable.";
-        }
-        return message;
-    }
+   @Override
+   public String getStatusMessage() {
+      String message = "";
+      try {
+         message = httpURLConnection.getResponseMessage();
+      } catch (IOException e) {
+         Log.e("IO error during the retrieval response message.", e);
+         message = "Server is not reachable.";
+      }
+      return message;
+   }
 
 }

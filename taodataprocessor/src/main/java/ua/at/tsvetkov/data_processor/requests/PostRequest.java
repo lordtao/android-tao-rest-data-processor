@@ -25,7 +25,6 @@ package ua.at.tsvetkov.data_processor.requests;
 
 import android.content.Context;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,9 +42,10 @@ import ua.at.tsvetkov.util.Log;
 
 public class PostRequest extends WebRequest {
 
-   private HashMap<String, String> postData = new HashMap<String, String>();
-   private HashMap<String, String> requestProperties = new HashMap<String, String>();
+   private HashMap<String, String> postData = new HashMap<>();
+   private HashMap<String, String> requestProperties = new HashMap<>();
    private String body;
+   private byte[] bodyB;
 
    private PostRequest() {
 
@@ -77,24 +77,29 @@ public class PostRequest extends WebRequest {
       httpURLConnection.setChunkedStreamingMode(0);
       httpURLConnection.setReadTimeout(configuration.getTimeout());
       httpURLConnection.setConnectTimeout(configuration.getTimeout());
-      httpURLConnection.setRequestProperty("Content-Length", Integer.toString(postDataString.length()));
       setRequestProperties();
 
-      OutputStream os = httpURLConnection.getOutputStream();
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-      writer.write(postDataString);
+      if (postDataString != null) {
+         httpURLConnection.setRequestProperty("Content-Length", Integer.toString(postDataString.length()));
 
-      writer.flush();
-      writer.close();
+         OutputStream os = httpURLConnection.getOutputStream();
+         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+         writer.write(postDataString);
+         writer.flush();
+         writer.close();
+      } else if (bodyB != null) {
+         httpURLConnection.setRequestProperty("Content-Length", Integer.toString(bodyB.length));
+
+         OutputStream os = httpURLConnection.getOutputStream();
+         os.write(bodyB, 0, bodyB.length);
+         os.flush();
+         os.close();
+      }
 
       printToLogUrl();
       printToLogPairs();
 
-      InputStream stream = httpURLConnection.getInputStream();
-      if(stream==null) {
-         stream = httpURLConnection.getErrorStream();
-      }
-      return new BufferedInputStream(stream);
+      return getStream();
    }
 
    private void setRequestProperties() {
@@ -406,8 +411,25 @@ public class PostRequest extends WebRequest {
       return this;
    }
 
+   /**
+    * Add request body
+    *
+    * @param body
+    * @return
+    */
    public PostRequest addBody(String body) {
       this.body = body;
+      return this;
+   }
+
+   /**
+    * Add request body
+    *
+    * @param body
+    * @return
+    */
+   public PostRequest addBody(byte[] body) {
+      this.bodyB = body;
       return this;
    }
 

@@ -25,13 +25,17 @@ package ua.at.tsvetkov.data_processor.requests;
 
 import android.content.Context;
 
-import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
+import java.util.Map;
 
 import ua.at.tsvetkov.data_processor.helpers.Scheme;
+import ua.at.tsvetkov.util.Log;
 
 /**
  * Put Request builder.
@@ -40,262 +44,323 @@ import ua.at.tsvetkov.data_processor.helpers.Scheme;
  */
 public class PutRequest extends WebRequest {
 
-    /**
-     * Return new instance of PutRequest.
-     *
-     * @return
-     */
-    public static PutRequest newInstance() {
-        return new PutRequest();
-    }
+   private HashMap<String, String> requestProperties = new HashMap<>();
+   private String body;
+   private byte[] bodyB;
 
-    @Override
-    public InputStream getInputStream() throws IOException {
-        if (!isBuild()) {
-            throw new IllegalArgumentException(REQUEST_IS_NOT_BUILDED);
-        }
-        startTime = System.currentTimeMillis();
+   /**
+    * Return new instance of PutRequest.
+    *
+    * @return
+    */
+   public static PutRequest newInstance() {
+      return new PutRequest();
+   }
 
-        httpURLConnection = (HttpURLConnection) getURL().openConnection();
-        httpURLConnection.setRequestMethod("PUT");
-        httpURLConnection.setReadTimeout(configuration.getTimeout());
-        httpURLConnection.setConnectTimeout(configuration.getTimeout());
+   @Override
+   public InputStream getInputStream() throws IOException {
+      if (!isBuild()) {
+         throw new IllegalArgumentException(REQUEST_IS_NOT_BUILDED);
+      }
+      startTime = System.currentTimeMillis();
 
-        printToLogUrl();
+      httpURLConnection = (HttpURLConnection) getURL().openConnection();
+      httpURLConnection.setRequestMethod("PUT");
+      httpURLConnection.setDoInput(true);
+      httpURLConnection.setDoOutput(true);
+      httpURLConnection.setChunkedStreamingMode(0);
+      httpURLConnection.setReadTimeout(configuration.getTimeout());
+      httpURLConnection.setConnectTimeout(configuration.getTimeout());
+      setRequestProperties();
 
-        InputStream stream = httpURLConnection.getInputStream();
-        if(stream==null) {
-            stream = httpURLConnection.getErrorStream();
-        }
-        return new BufferedInputStream(stream);
-    }
+      if (body != null) {
+         httpURLConnection.setRequestProperty("Content-Length", Integer.toString(body.length()));
 
-    // ********************************************************************************
+         OutputStream os = httpURLConnection.getOutputStream();
+         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+         writer.write(body);
+         writer.flush();
+         writer.close();
+      } else if (bodyB != null) {
+         httpURLConnection.setRequestProperty("Content-Length", Integer.toString(bodyB.length));
 
-    /**
-     * Directly assign full URL string. All other URL methods will be ignored
-     *
-     * @param url
-     */
-    public PutRequest setUrl(String url) {
-        this.url = url;
-        return this;
-    }
+         OutputStream os = httpURLConnection.getOutputStream();
+         os.write(bodyB, 0, bodyB.length);
+         os.flush();
+         os.close();
+      }
 
-    /**
-     * Set encoding
-     *
-     * @param encoding
-     */
-    public PutRequest setEncoding(String encoding) {
-        this.encoding = encoding;
-        return this;
-    }
+      printToLogUrl();
 
-    /**
-     * Sets the scheme "http://".
-     *
-     * @return
-     */
-    public PutRequest setSchemeHttp() {
-        this.scheme = Scheme.HTTP.toString();
-        return this;
-    }
+      return getStream();
+   }
 
-    /**
-     * Sets the scheme "https://".
-     *
-     * @return
-     */
-    public PutRequest setSchemeHttps() {
-        this.scheme = Scheme.HTTPS.toString();
-        return this;
-    }
+   private void setRequestProperties() {
+      for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
+         httpURLConnection.setRequestProperty(entry.getKey(), entry.getValue());
+      }
+   }
 
-    /**
-     * Sets the scheme "file://".
-     *
-     * @return
-     */
-    public PutRequest setSchemeFile() {
-        this.scheme = Scheme.FILE.toString();
-        return this;
-    }
+   // ********************************************************************************
 
-    /**
-     * Sets your scheme.
-     *
-     * @param scheme
-     * @return
-     */
-    public PutRequest setScheme(String scheme) {
-        this.scheme = scheme;
-        return this;
-    }
+   /**
+    * Sets the value of the specified request header field. The value will only be used by the current URLConnection instance. This method can only be called before the connection is established.
+    *
+    * @param key
+    * @param value
+    * @return
+    */
+   public PutRequest addRequestProperty(String key, String value) {
+      requestProperties.put(key, value);
+      return this;
+   }
 
-    /**
-     * Set User Info.
-     *
-     * @param username
-     * @param password
-     * @return
-     */
-    public PutRequest setUserInfo(String username, String password) {
-        this.username = username;
-        this.password = password;
-        return this;
-    }
+   /**
+    * Directly assign full URL string. All other URL methods will be ignored
+    *
+    * @param url
+    */
+   public PutRequest setUrl(String url) {
+      this.url = url;
+      return this;
+   }
 
-    /**
-     * Set host.
-     *
-     * @param host
-     * @return
-     */
-    public PutRequest setHost(String host) {
-        this.host = host;
-        return this;
-    }
+   /**
+    * Set encoding
+    *
+    * @param encoding
+    */
+   public PutRequest setEncoding(String encoding) {
+      this.encoding = encoding;
+      return this;
+   }
 
-    /**
-     * Set port.
-     *
-     * @param port
-     * @return
-     */
-    public PutRequest setPort(String port) {
-        this.port = port;
-        return this;
-    }
+   /**
+    * Sets the scheme "http://".
+    *
+    * @return
+    */
+   public PutRequest setSchemeHttp() {
+      this.scheme = Scheme.HTTP.toString();
+      return this;
+   }
 
-    /**
-     * Set path
-     *
-     * @param path
-     * @return
-     */
-    public PutRequest setPath(String path) {
-        this.path = path;
-        return this;
-    }
+   /**
+    * Sets the scheme "https://".
+    *
+    * @return
+    */
+   public PutRequest setSchemeHttps() {
+      this.scheme = Scheme.HTTPS.toString();
+      return this;
+   }
 
-    public PutRequest setLogTag(String tag) {
-        this.tag = tag;
-        return this;
-    }
+   /**
+    * Sets the scheme "file://".
+    *
+    * @return
+    */
+   public PutRequest setSchemeFile() {
+      this.scheme = Scheme.FILE.toString();
+      return this;
+   }
 
-    /**
-     * Add to query GET parameter.
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    public PutRequest addGetParam(String key, String value) {
-        if (queries == null) {
-            queries = new HashMap<String, String>();
-        }
-        queries.put(key, value);
-        return this;
-    }
+   /**
+    * Sets your scheme.
+    *
+    * @param scheme
+    * @return
+    */
+   public PutRequest setScheme(String scheme) {
+      this.scheme = scheme;
+      return this;
+   }
 
-    /**
-     * Add to query GET parameter.
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    public PutRequest addGetParam(String key, int value) {
-        if (queries == null) {
-            queries = new HashMap<String, String>();
-        }
-        queries.put(key, String.valueOf(value));
-        return this;
-    }
+   /**
+    * Set User Info.
+    *
+    * @param username
+    * @param password
+    * @return
+    */
+   public PutRequest setUserInfo(String username, String password) {
+      this.username = username;
+      this.password = password;
+      return this;
+   }
 
-    /**
-     * Add to query GET parameter.
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    public PutRequest addGetParam(String key, long value) {
-        if (queries == null) {
-            queries = new HashMap<String, String>();
-        }
-        queries.put(key, String.valueOf(value));
-        return this;
-    }
+   /**
+    * Set host.
+    *
+    * @param host
+    * @return
+    */
+   public PutRequest setHost(String host) {
+      this.host = host;
+      return this;
+   }
 
-    /**
-     * Add to query GET parameter.
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    public PutRequest addGetParam(String key, float value) {
-        if (queries == null) {
-            queries = new HashMap<String, String>();
-        }
-        queries.put(key, String.valueOf(value));
-        return this;
-    }
+   /**
+    * Set port.
+    *
+    * @param port
+    * @return
+    */
+   public PutRequest setPort(String port) {
+      this.port = port;
+      return this;
+   }
 
-    /**
-     * Add to query GET parameter.
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    public PutRequest addGetParam(String key, double value) {
-        if (queries == null) {
-            queries = new HashMap<String, String>();
-        }
-        queries.put(key, String.valueOf(value));
-        return this;
-    }
+   /**
+    * Set path
+    *
+    * @param path
+    * @return
+    */
+   public PutRequest setPath(String path) {
+      this.path = path;
+      return this;
+   }
 
-    /**
-     * Add fragment.
-     *
-     * @param fragment
-     * @return
-     */
-    public PutRequest addFragment(String fragment) {
-        this.fragment = fragment;
-        return this;
-    }
+   public PutRequest setLogTag(String tag) {
+      this.tag = tag;
+      return this;
+   }
 
-    /**
-     * Save received data to cache file. Skip it if exist.
-     *
-     * @param cacheFileName
-     */
-    public PutRequest saveToCacheFile(String cacheFileName) {
-        this.cacheFileName = cacheFileName;
-        this.isRewriteFile = false;
-        return this;
-    }
+   /**
+    * Add to query GET parameter.
+    *
+    * @param key
+    * @param value
+    * @return
+    */
+   public PutRequest addGetParam(String key, String value) {
+      if (queries == null) {
+         queries = new HashMap<String, String>();
+      }
+      queries.put(key, value);
+      return this;
+   }
 
-    /**
-     * Save received data to cashe file. Rewrite it if exist.
-     *
-     * @param cacheFileName
-     */
-    public PutRequest rewriteCashedFile(String cacheFileName) {
-        this.cacheFileName = cacheFileName;
-        this.isRewriteFile = true;
-        return this;
-    }
+   /**
+    * Add to query GET parameter.
+    *
+    * @param key
+    * @param value
+    * @return
+    */
+   public PutRequest addGetParam(String key, int value) {
+      if (queries == null) {
+         queries = new HashMap<String, String>();
+      }
+      queries.put(key, String.valueOf(value));
+      return this;
+   }
 
-    @Override
-    public PutRequest addProgressDialog(Context context, String title, String message) {
-        setupProgress(context, title, message);
-        return this;
-    }
+   /**
+    * Add to query GET parameter.
+    *
+    * @param key
+    * @param value
+    * @return
+    */
+   public PutRequest addGetParam(String key, long value) {
+      if (queries == null) {
+         queries = new HashMap<String, String>();
+      }
+      queries.put(key, String.valueOf(value));
+      return this;
+   }
+
+   /**
+    * Add to query GET parameter.
+    *
+    * @param key
+    * @param value
+    * @return
+    */
+   public PutRequest addGetParam(String key, float value) {
+      if (queries == null) {
+         queries = new HashMap<String, String>();
+      }
+      queries.put(key, String.valueOf(value));
+      return this;
+   }
+
+   /**
+    * Add to query GET parameter.
+    *
+    * @param key
+    * @param value
+    * @return
+    */
+   public PutRequest addGetParam(String key, double value) {
+      if (queries == null) {
+         queries = new HashMap<String, String>();
+      }
+      queries.put(key, String.valueOf(value));
+      return this;
+   }
+
+   /**
+    * Add fragment.
+    *
+    * @param fragment
+    * @return
+    */
+   public PutRequest addFragment(String fragment) {
+      this.fragment = fragment;
+      return this;
+   }
+
+   /**
+    * Save received data to cache file. Skip it if exist.
+    *
+    * @param cacheFileName
+    */
+   public PutRequest saveToCacheFile(String cacheFileName) {
+      this.cacheFileName = cacheFileName;
+      this.isRewriteFile = false;
+      return this;
+   }
+
+   /**
+    * Save received data to cashe file. Rewrite it if exist.
+    *
+    * @param cacheFileName
+    */
+   public PutRequest rewriteCashedFile(String cacheFileName) {
+      this.cacheFileName = cacheFileName;
+      this.isRewriteFile = true;
+      return this;
+   }
+
+   @Override
+   public PutRequest addProgressDialog(Context context, String title, String message) {
+      setupProgress(context, title, message);
+      return this;
+   }
+
+   /**
+    * Add request body
+    *
+    * @param body
+    * @return
+    */
+   public PutRequest addBody(String body) {
+      this.body = body;
+      return this;
+   }
+
+   /**
+    * Add request body
+    *
+    * @param body
+    * @return
+    */
+   public PutRequest addBody(byte[] body) {
+      this.bodyB = body;
+      return this;
+   }
 
 }

@@ -110,9 +110,7 @@ buildscript {
             url  "http://dl.bintray.com/lordtao/maven"
         }
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-alpha8'
-    }
+    ...
 }
 
 allprojects {
@@ -126,5 +124,5 @@ allprojects {
 ```
 add to your module build.gradle
 ```
-    compile 'ua.at.tsvetkov:taodataprocessor:1.2.1'
+    compile 'ua.at.tsvetkov:taodataprocessor:1.2.10@aar'
 ```
