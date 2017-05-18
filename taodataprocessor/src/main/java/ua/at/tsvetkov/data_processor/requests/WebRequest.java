@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 
+import ua.at.tsvetkov.data_processor.helpers.HttpConstants;
 import ua.at.tsvetkov.util.Log;
 
 /**
@@ -90,7 +91,7 @@ public abstract class WebRequest extends Request {
          statusCode = httpURLConnection.getResponseCode();
       } catch (IOException e) {
          Log.e("IO error during the retrieval response code.", e);
-         statusCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
+         statusCode = HttpConstants.NO_INTERNET_CONNECTION;
       }
       return statusCode;
    }
@@ -102,7 +103,7 @@ public abstract class WebRequest extends Request {
          message = httpURLConnection.getResponseMessage();
       } catch (IOException e) {
          Log.e("IO error during the retrieval response message.", e);
-         message = "Server is not reachable.";
+         message = "No internet connection.";
       }
       return message;
    }

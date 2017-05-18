@@ -29,6 +29,7 @@ import android.content.res.AssetManager;
 import java.io.IOException;
 import java.io.InputStream;
 
+import ua.at.tsvetkov.data_processor.helpers.HttpConstants;
 import ua.at.tsvetkov.data_processor.processors.Processor;
 
 /**
@@ -69,7 +70,7 @@ public class AssetsRequest extends Request {
         startTime = System.currentTimeMillis();
 
         inputStream = assetManager.open(toString());
-        statusCode = Processor.FILE_SUCCESS;
+        statusCode = HttpConstants.FILE_SUCCESS;
         return inputStream;
     }
 

@@ -30,6 +30,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import ua.at.tsvetkov.data_processor.helpers.HttpConstants;
 import ua.at.tsvetkov.data_processor.processors.Processor;
 
 /**
@@ -63,7 +64,7 @@ public class FileRequest extends Request {
      */
     public InputStream getInputStream() throws IOException {
         inputStream = new FileInputStream(new File(toString()));
-        statusCode = Processor.FILE_SUCCESS;
+        statusCode = HttpConstants.FILE_SUCCESS;
         return inputStream;
     }
 
