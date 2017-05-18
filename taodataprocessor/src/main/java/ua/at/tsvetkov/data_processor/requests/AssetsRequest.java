@@ -29,7 +29,7 @@ import android.content.res.AssetManager;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ua.at.tsvetkov.data_processor.processors.Processor;
+import ua.at.tsvetkov.data_processor.helpers.ConnectionConstants;
 
 /**
  * The main class for the assets file request building. If not specified the request be built with basic configuration parameters specified
@@ -69,7 +69,7 @@ public class AssetsRequest extends Request {
         startTime = System.currentTimeMillis();
 
         inputStream = assetManager.open(toString());
-        statusCode = Processor.FILE_SUCCESS;
+        statusCode = ConnectionConstants.FILE_SUCCESS;
         return inputStream;
     }
 

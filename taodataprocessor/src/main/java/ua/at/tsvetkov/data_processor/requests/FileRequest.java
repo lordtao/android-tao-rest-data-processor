@@ -30,7 +30,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ua.at.tsvetkov.data_processor.processors.Processor;
+import ua.at.tsvetkov.data_processor.helpers.ConnectionConstants;
 
 /**
  * The main class for the file request building. If not specified the request be built with basic configuration parameters specified in
@@ -63,7 +63,7 @@ public class FileRequest extends Request {
      */
     public InputStream getInputStream() throws IOException {
         inputStream = new FileInputStream(new File(toString()));
-        statusCode = Processor.FILE_SUCCESS;
+        statusCode = ConnectionConstants.FILE_SUCCESS;
         return inputStream;
     }
 

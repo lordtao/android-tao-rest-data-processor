@@ -44,6 +44,7 @@ dependencies {
     compile 'ua.at.tsvetkov:taocore:1.2.15'
     compile 'com.android.support:support-v4:25.2.0'
     compile 'com.fasterxml.jackson.core:jackson-core:2.4.1'
+    compile 'com.android.support:support-annotations:25.3.1'
 }
 
 task wrapper(type: Wrapper) {
