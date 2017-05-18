@@ -38,7 +38,7 @@ import java.util.Map.Entry;
 
 import ua.at.tsvetkov.data_processor.DataProcessor;
 import ua.at.tsvetkov.data_processor.DataProcessorConfiguration;
-import ua.at.tsvetkov.data_processor.helpers.HttpConstants;
+import ua.at.tsvetkov.data_processor.helpers.ConnectionConstants;
 import ua.at.tsvetkov.data_processor.helpers.Scheme;
 import ua.at.tsvetkov.util.Log;
 
@@ -74,7 +74,7 @@ public abstract class Request {
    protected String                  tag;
    protected boolean                 isRewriteFile;
    protected long                    startTime;
-   @HttpConstants.HttpResponseCode
+   @ConnectionConstants.HttpResponseCode
    protected int                     statusCode;
    protected String statusMessage = "";
 
@@ -248,7 +248,7 @@ public abstract class Request {
     *
     * @return http code
     */
-   @HttpConstants.HttpResponseCode
+   @ConnectionConstants.HttpResponseCode
    public int getStatusCode() {
       return statusCode;
    }

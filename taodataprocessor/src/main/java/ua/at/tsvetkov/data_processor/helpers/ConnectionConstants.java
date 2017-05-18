@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.net.HttpURLConnection;
 
-public final class HttpConstants {
+public final class ConnectionConstants {
 
     /**
      * File was opened success.
@@ -54,5 +54,5 @@ public final class HttpConstants {
     })
     public @interface HttpResponseCode {}
 
-    private HttpConstants() {}
+    private ConnectionConstants() {}
 }

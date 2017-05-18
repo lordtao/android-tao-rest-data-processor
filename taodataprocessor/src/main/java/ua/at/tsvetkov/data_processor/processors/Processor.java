@@ -33,12 +33,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.security.InvalidParameterException;
 
 import ua.at.tsvetkov.data_processor.DataProcessor;
-import ua.at.tsvetkov.data_processor.helpers.HttpConstants;
+import ua.at.tsvetkov.data_processor.helpers.ConnectionConstants;
 import ua.at.tsvetkov.data_processor.interfaces.InputStreamDataInterface;
 import ua.at.tsvetkov.data_processor.interfaces.StringDataInterface;
 import ua.at.tsvetkov.data_processor.processors.abstractclasses.AbstractProcessor;
@@ -135,7 +134,7 @@ public class Processor<T> {
          } else {
             inputStream = request.getInputStream();
          }
-         if (request.getStatusCode() == HttpConstants.FILE_SUCCESS || inputStream != null) {
+         if (request.getStatusCode() == ConnectionConstants.FILE_SUCCESS || inputStream != null) {
             createProcessor();
          } else {
             Log.e("Request " + request.toString() + " status:" + request.getStatusCode());
@@ -220,7 +219,7 @@ public class Processor<T> {
       }
    }
 
-   private void sendMessage(final @HttpConstants.HttpResponseCode int statusCode, final T object, final String errMessage) {
+   private void sendMessage(final @ConnectionConstants.HttpResponseCode int statusCode, final T object, final String errMessage) {
       setResult(object);
       setStatus(statusCode);
       setStatusMessage(errMessage);
@@ -337,7 +336,7 @@ public class Processor<T> {
    /**
     * @param statusCode
     */
-   private void setStatus( @HttpConstants.HttpResponseCode int statusCode) {
+   private void setStatus( @ConnectionConstants.HttpResponseCode int statusCode) {
       this.statusCode = statusCode;
    }
 
@@ -348,10 +347,10 @@ public class Processor<T> {
        *
        * @param obj        created object or null
        * @param statusCode status of request execution. <br>
-       *                   For http request - HTTP Status Code see {@link HttpConstants} constant.<br>
+       *                   For http request - HTTP Status Code see {@link ConnectionConstants} constant.<br>
        * @param errMessage result message
        */
-      void onFinish(T obj, @HttpConstants.HttpResponseCode int statusCode, String errMessage);
+      void onFinish(T obj, @ConnectionConstants.HttpResponseCode int statusCode, String errMessage);
 
    }
 

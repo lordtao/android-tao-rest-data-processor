@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 
-import ua.at.tsvetkov.data_processor.helpers.HttpConstants;
+import ua.at.tsvetkov.data_processor.helpers.ConnectionConstants;
 import ua.at.tsvetkov.util.Log;
 
 /**
@@ -91,7 +91,7 @@ public abstract class WebRequest extends Request {
          statusCode = httpURLConnection.getResponseCode();
       } catch (IOException e) {
          Log.e("IO error during the retrieval response code.", e);
-         statusCode = HttpConstants.NO_INTERNET_CONNECTION;
+         statusCode = ConnectionConstants.NO_INTERNET_CONNECTION;
       }
       return statusCode;
    }
