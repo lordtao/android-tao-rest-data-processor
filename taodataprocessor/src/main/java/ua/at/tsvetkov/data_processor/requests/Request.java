@@ -74,7 +74,7 @@ public abstract class Request {
    protected String                  tag;
    protected boolean                 isRewriteFile;
    protected long                    startTime;
-   @ConnectionConstants.HttpResponseCode
+   @ConnectionConstants.ConnectionResponseCode
    protected int                     statusCode;
    protected String statusMessage = "";
 
@@ -248,7 +248,7 @@ public abstract class Request {
     *
     * @return http code
     */
-   @ConnectionConstants.HttpResponseCode
+   @ConnectionConstants.ConnectionResponseCode
    public int getStatusCode() {
       return statusCode;
    }

@@ -219,7 +219,7 @@ public class Processor<T> {
       }
    }
 
-   private void sendMessage(final @ConnectionConstants.HttpResponseCode int statusCode, final T object, final String errMessage) {
+   private void sendMessage(final @ConnectionConstants.ConnectionResponseCode int statusCode, final T object, final String errMessage) {
       setResult(object);
       setStatus(statusCode);
       setStatusMessage(errMessage);
@@ -336,7 +336,7 @@ public class Processor<T> {
    /**
     * @param statusCode
     */
-   private void setStatus( @ConnectionConstants.HttpResponseCode int statusCode) {
+   private void setStatus( @ConnectionConstants.ConnectionResponseCode int statusCode) {
       this.statusCode = statusCode;
    }
 
@@ -350,7 +350,7 @@ public class Processor<T> {
        *                   For http request - HTTP Status Code see {@link ConnectionConstants} constant.<br>
        * @param errMessage result message
        */
-      void onFinish(T obj, @ConnectionConstants.HttpResponseCode int statusCode, String errMessage);
+      void onFinish(T obj, @ConnectionConstants.ConnectionResponseCode int statusCode, String errMessage);
 
    }
 

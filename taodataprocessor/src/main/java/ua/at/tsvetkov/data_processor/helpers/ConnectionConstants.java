@@ -52,7 +52,7 @@ public final class ConnectionConstants {
             HttpURLConnection.HTTP_RESET,
             HttpURLConnection.HTTP_SEE_OTHER
     })
-    public @interface HttpResponseCode {}
+    public @interface ConnectionResponseCode {}
 
     private ConnectionConstants() {}
 }
