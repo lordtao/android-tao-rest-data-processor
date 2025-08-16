@@ -1,6 +1,8 @@
 #Android Data Processor. Easy to build a REST request, to receive and processing data (XML, JSON, CSV and etc.)
 ===========================
 
+##This project is no longer actively maintained.
+
 The Data Processor is designed to perform simple RESTservice requests or to files locally. Requests can run synchronously or asynchronously. Used LruCache for store results and ThreadPool for async requests.
 
 Download from Bintray: [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-rest-data-processor/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-rest-data-processor/_latestVersion)
